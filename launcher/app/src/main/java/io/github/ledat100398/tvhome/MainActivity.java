@@ -114,7 +114,6 @@ public class MainActivity extends Activity implements AppAdapter.Host {
     private View panelOpener;
     private long lastMoveAt;
     private int scrollTarget;
-    private int scrolled;              // grid scroll offset, tracked from onScrolled
     private int pendingFocus = -1;     // tile to focus as soon as its view is attached
 
     private final BroadcastReceiver packages = new BroadcastReceiver() {
@@ -264,12 +263,6 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         });
         adapter = new AppAdapter(this, cellW);
         grid.setAdapter(adapter);
-        grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
-                scrolled += dy;
-            }
-        });
         // A row that was off screen gets its focus the moment its tile is attached.
         grid.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
@@ -745,10 +738,25 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         int rowH = Ui.px(AppAdapter.TILE_H + AppAdapter.ROW_GAP);
         // Rows 0 and 1 are both on screen from the start; only a third row and beyond need the grid to move.
         int target = row <= 1 ? 0 : Ui.px(470) + (row - 2) * rowH;
-        if (target == scrollTarget && scrolled == target) return;
+        // Already gliding to this row: let it finish rather than restart the ease on every key press.
+        if (target == scrollTarget && grid.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) return;
         scrollTarget = target;
-        int dy = target - scrolled;
+        int dy = target - currentOffset();
         if (dy != 0) grid.smoothScrollBy(0, dy, EASE_OUT, 320);
+    }
+
+    /**
+     * How far the grid is scrolled, read from where the rows actually are. A running total of scroll
+     * events drifts when apps are hidden or reordered (the layout shifts without a scroll event), which
+     * left the rows stranded halfway up the screen; measuring every time cannot drift.
+     */
+    private int currentOffset() {
+        if (!(grid.getLayoutManager() instanceof GridLayoutManager) || grid.getChildCount() == 0) return 0;
+        GridLayoutManager g = (GridLayoutManager) grid.getLayoutManager();
+        int first = g.findFirstVisibleItemPosition();
+        View v = first == RecyclerView.NO_POSITION ? null : g.findViewByPosition(first);
+        if (v == null) return 0;
+        return (first / COLS) * v.getHeight() + grid.getPaddingTop() - v.getTop();
     }
 
     /** The wallpaper glides a little against the focus: near layers seem to move, the scene gains depth. */

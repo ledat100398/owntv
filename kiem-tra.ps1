@@ -75,6 +75,12 @@ function Buoc($ten, [string[]]$lenh, [bool]$canHien = $true) {
     if ($dat) { Ok "  ĐẠT   $ten" } else { Loi "  LỖI   $ten - $ghiChu" }
 }
 
+# Giữ nguyên cài đặt của anh: thứ tự ô, app đã ẩn, kiểu màn hình. Sao lưu trước, trả lại sau khi kiểm tra
+# (bước bấm ngẫu nhiên có thể dời ô, ẩn app hay đổi kiểu đồng hồ). Bản dựng debug cho phép run-as đọc dữ liệu app.
+$saoLuuCaiDat = "run-as $pkg sh -c 'mkdir -p files; if [ -f shared_prefs/home.xml ]; then cp shared_prefs/home.xml files/kiem-tra.bak; else rm -f files/kiem-tra.bak; fi'"
+$traCaiDat = "run-as $pkg sh -c 'if [ -f files/kiem-tra.bak ]; then cp files/kiem-tra.bak shared_prefs/home.xml; rm files/kiem-tra.bak; else rm -f shared_prefs/home.xml; fi'"
+TV @($saoLuuCaiDat) | Out-Null
+
 Tieude 'Thao tác remote'
 TV @('logcat -b crash -c') | Out-Null
 Buoc 'Mở màn hình chính' @("am start -n $act", 'input keyevent KEYCODE_HOME', 'sleep 3')
@@ -122,6 +128,25 @@ Buoc 'Bấm ngẫu nhiên 1.500 phím' @($monkey, 'sleep 2', 'input keyevent KEY
 $k = TV @($mem)
 $pssSau = if ($k[$mem] -match 'TOTAL(?: PSS)?:\s+(\d+)') { [math]::Round([int]$Matches[1] / 1024) } else { -1 }
 Write-Host "  Bộ nhớ: trước $pssTruoc MB, sau $pssSau MB (ngưỡng 150 MB)"
+
+TV @("am force-stop $pkg", $traCaiDat, "am start -n $act", 'input keyevent KEYCODE_HOME') | Out-Null
+Ok '  Đã trả lại thứ tự ô, app ẩn và kiểu màn hình như trước khi kiểm tra.'
+
+# Hàng app đầu tiên phải về đúng chỗ (y ≈ 612 trên khung 1080), không bị kẹt lưng chừng màn hình.
+Start-Sleep 3
+$xml = UiDump
+$nut = @('Nguồn vào', 'Wi-Fi', 'Cài đặt', 'Inputs', 'Settings', '信号源', '设置')
+$tops = @()
+foreach ($m in [regex]::Matches($xml, 'content-desc="([^"]+)"[^>]*focusable="true"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"')) {
+    if ($nut -notcontains $m.Groups[1].Value) { $tops += [int]$m.Groups[3].Value }
+}
+$cao = if ($xml -match 'bounds="\[0,0\]\[(\d+),(\d+)\]"') { [int]$Matches[2] } else { 1080 }
+if ($tops.Count) {
+    $y = [math]::Round(($tops | Measure-Object -Minimum).Minimum * 1080 / $cao)
+    $dat = $y -ge 560 -and $y -le 640
+    $script:ketQua += [pscustomobject]@{ Buoc = "Hàng app đầu về đúng chỗ (y = $y, cần 560-640)"; Dat = $dat; GhiChu = $(if ($dat) { '' } else { 'lưới bị lệch' }) }
+    if ($dat) { Ok "  ĐẠT   Hàng app đầu về đúng chỗ (y = $y)" } else { Loi "  LỖI   Hàng app đầu lệch (y = $y, cần 560-640)" }
+}
 
 Tieude 'Kết quả'
 $loi = @($ketQua | Where-Object { -not $_.Dat })
