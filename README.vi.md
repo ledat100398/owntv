@@ -9,6 +9,11 @@ Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 
 [English](README.md) · Tiếng Việt · [简体中文](README.zh-CN.md)
 
+
+<img src="docs/home.jpg" alt="Màn hình chính OwnTV trên tivi Sony BRAVIA XR-65X95J" width="860">
+
+<sub>Chụp trên tivi Sony BRAVIA XR-65X95J, kiểu đồng hồ lớn.</sub>
+
 </div>
 
 ---

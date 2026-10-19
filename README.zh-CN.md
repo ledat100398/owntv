@@ -9,6 +9,11 @@
 
 [English](README.md) · [Tiếng Việt](README.vi.md) · 简体中文
 
+
+<img src="docs/home.jpg" alt="OwnTV 主屏幕，索尼 BRAVIA XR-65X95J 实拍" width="860">
+
+<sub>拍摄于索尼 BRAVIA XR-65X95J，大时钟样式。</sub>
+
 </div>
 
 ---

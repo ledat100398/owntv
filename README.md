@@ -9,6 +9,11 @@ No sponsored rows, no autoplay, nothing running in the background.
 
 English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
+
+<img src="docs/home.jpg" alt="OwnTV home screen on a Sony BRAVIA XR-65X95J" width="860">
+
+<sub>Photographed on a Sony BRAVIA XR-65X95J, large-clock style.</sub>
+
 </div>
 
 ---
