@@ -495,6 +495,7 @@ public class MainActivity extends Activity implements AppAdapter.Host {
                 if (isFinishing()) return;
                 if (adapter.getItemCount() == 0) inBar = false;
                 adapter.setItems(list);
+                resyncGrid();
                 grid.post(this::restoreFocus);
             });
         });
@@ -744,6 +745,20 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         int dy = target - currentOffset();
         if (dy != 0) grid.smoothScrollBy(0, dy, EASE_OUT, 320);
     }
+
+    /**
+     * Moving, hiding or reloading apps can shift the rows without a key press (RecyclerView keeps its
+     * anchor tile in place). Once the reflow has settled, put the grid back where the focused row belongs.
+     */
+    private void resyncGrid() {
+        handler.removeCallbacks(resync);
+        handler.postDelayed(resync, 280);   // after the 220 ms move animation
+    }
+
+    private final Runnable resync = () -> {
+        scrollTarget = Integer.MIN_VALUE;
+        scrollToRow(Math.max(0, focusPos) / COLS);
+    };
 
     /**
      * How far the grid is scrolled, read from where the rows actually are. A running total of scroll
@@ -1282,6 +1297,7 @@ public class MainActivity extends Activity implements AppAdapter.Host {
     private void moveTo(int from, int to) {
         // The lifted tile keeps its view (and focus); RecyclerView slides the neighbours into place.
         adapter.move(from, to);
+        resyncGrid();
         focusPos = to;
         lastPos = to;
         scrollToRow(to / COLS);
@@ -1309,6 +1325,7 @@ public class MainActivity extends Activity implements AppAdapter.Host {
             List<AppAdapter.Entry> back = new ArrayList<>();
             for (String k : savedOrder) if (byKey.containsKey(k)) back.add(byKey.get(k));
             adapter.setItems(back);
+            resyncGrid();
             final int p = moveStart;
             grid.post(() -> focusTile(p, false));
         }
@@ -1336,6 +1353,7 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         prefs.edit().putStringSet("hidden", hidden).apply();
         int pos = adapter.positionOf(e.key);
         if (pos >= 0) adapter.remove(pos);
+        resyncGrid();
         final int p = Math.min(Math.max(0, pos), adapter.getItemCount() - 1);
         grid.post(() -> focusTile(p, false));
     }
