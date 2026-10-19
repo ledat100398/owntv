@@ -1,10 +1,11 @@
 <div align="center">
 
-# Glass Home
+# OwnTV
 
-**A calm, Apple TV–style home screen for Android TV and Google TV.**
+### Your TV. Your apps. Nothing else.
 
-No ads, no recommendation rows, nothing running in the background. Just your apps, a clock and frosted glass.
+A fast, ad-free home screen for Android TV and Google TV, with the calm and polish of Apple TV.
+No sponsored rows, no autoplay, nothing running in the background.
 
 English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
@@ -32,7 +33,7 @@ English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 ## Why
 
 The stock Google TV home screen is a shop window: sponsored rows, autoplaying trailers and a dozen
-vendor services that start with the TV and never stop. Glass Home replaces it with a home screen that
+vendor services that start with the TV and never stop. OwnTV replaces it with a home screen that
 does one thing well: get you to the app you want, quickly and quietly.
 
 ## Features
@@ -79,10 +80,10 @@ does one thing well: get you to the app you want, quickly and quietly.
 2. **Download this repository** (green *Code* button › *Download ZIP*) and unzip it.
 3. **Run `3-CAI-LAUNCHER.cmd`.** The first run downloads Java 17 and the Android build tools
    (about 600 MB, 10–20 minutes); later runs take seconds. When the TV asks *Allow USB debugging?*,
-   tick *Always allow* and confirm. Glass Home then appears in your app row; the Home button still
+   tick *Always allow* and confirm. OwnTV then appears in your app row; the Home button still
    opens the original home screen while you try it.
 4. **Make it your home screen:** run `4-DAT-LAM-MAN-CHINH.cmd`. The script presses Home itself to check
-   and puts everything back if Home does not land on Glass Home.
+   and puts everything back if Home does not land on OwnTV.
 
 > The helper scripts are written in Vietnamese. Each one asks before changing anything, keeps a
 > backup and has a matching undo script. If you prefer English, the manual steps below do the same.
@@ -91,8 +92,8 @@ does one thing well: get you to the app you want, quickly and quietly.
 |---|---|
 | `1-TOI-UU-TV.cmd` | Switches off background, advertising and tracking apps (Sony list), group by group |
 | `2-KHOI-PHUC.cmd` | Restores everything step 1 changed |
-| `3-CAI-LAUNCHER.cmd` | Builds and installs Glass Home, sets the clock screensaver |
-| `4-DAT-LAM-MAN-CHINH.cmd` | Makes Glass Home the home screen |
+| `3-CAI-LAUNCHER.cmd` | Builds and installs OwnTV, sets the clock screensaver |
+| `4-DAT-LAM-MAN-CHINH.cmd` | Makes OwnTV the home screen |
 | `5-TRA-LAI-MAN-GOC.cmd` | Brings back the original home screen |
 | `6-DO-HIEU-NANG.cmd` | Measures start time, dropped frames and memory |
 
@@ -186,7 +187,7 @@ Missing packages are skipped, so the defaults are safe on any TV. To change the 
   ```
 
 - Background apps: run `2-KHOI-PHUC.cmd`, or `adb shell cmd package install-existing <package>`.
-- Glass Home itself: Settings › Apps › Glass Home › Uninstall.
+- OwnTV itself: Settings › Apps › OwnTV › Uninstall.
 
 When you are done, switch USB debugging off again.
 
@@ -196,12 +197,12 @@ When you are done, switch USB debugging off again.
 |---|---|---|
 | Sony BRAVIA XR-65X95J | Google TV, Android 12 | Daily use |
 
-Glass Home uses only public Android TV APIs and should work on any Android TV 8.0+ device. If you try
+OwnTV uses only public Android TV APIs and should work on any Android TV 8.0+ device. If you try
 it on another model, please open an issue with the model and what you saw, so this table can grow.
 
 ## Privacy
 
-Glass Home makes no network requests and contains no analytics. It asks for location permission only
+OwnTV makes no network requests and contains no analytics. It asks for location permission only
 because Android requires it to read the name of the Wi-Fi network you are connected to.
 
 ## Contributing
@@ -210,7 +211,7 @@ Bug reports, TV lists and pull requests are welcome; see [CONTRIBUTING.md](CONTR
 
 ## Acknowledgements
 
-Glass Home grew out of [tv-vibehack](https://github.com/Gathin23/tv-vibehack) by Gathin. The idea of
+OwnTV grew out of [tv-vibehack](https://github.com/Gathin23/tv-vibehack) by Gathin. The idea of
 replacing the stock home screen over ADB, the ADB helper in `tools/` and the community debloat lists in
 `examples/` come from that project. The launcher, its design and the Windows scripts were rewritten
 from scratch.

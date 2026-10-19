@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Glass Home</string>
+    <string name="app_name">OwnTV</string>
     <string name="inputs">信号源</string>
     <string name="wifi">Wi-Fi</string>
     <string name="ethernet">有线网络</string>

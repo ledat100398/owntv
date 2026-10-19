@@ -143,7 +143,7 @@ if ($CheDo -eq 'cai') {
     TV @("am start -n $act") | Out-Null
     Write-Host ''
     Ok 'Launcher mới đang mở trên tivi.'
-    Write-Host 'Dùng thử vài ngày: mở nó từ hàng ứng dụng (ô "Glass Home"). Nút Home vẫn về màn gốc nếu chưa đặt làm màn chính.'
+    Write-Host 'Dùng thử vài ngày: mở nó từ hàng ứng dụng (ô "OwnTV"). Nút Home vẫn về màn gốc nếu chưa đặt làm màn chính.'
     Write-Host 'Ổn rồi thì chạy 4-DAT-LAM-MAN-CHINH.cmd. Muốn đo mượt hay không: 6-DO-HIEU-NANG.cmd.'
     exit 0
 }

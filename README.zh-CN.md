@@ -1,10 +1,11 @@
 <div align="center">
 
-# Glass Home
+# OwnTV
 
-**为 Android TV 和 Google TV 打造的简洁主屏幕，延续 Apple TV 的设计理念。**
+### 你的电视，你的应用，别无其他。
 
-没有广告，没有推荐栏，没有后台常驻的应用。只有你的应用、时钟和磨砂玻璃。
+为 Android TV 和 Google TV 打造的快速、无广告主屏幕，拥有 Apple TV 般的安静与精致。
+没有赞助推荐栏，没有自动播放，没有后台常驻应用。
 
 [English](README.md) · [Tiếng Việt](README.vi.md) · 简体中文
 
@@ -32,7 +33,7 @@
 ## 为什么做这个项目
 
 Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的预告片，还有十几个厂商服务随电视启动、
-一直运行。Glass Home 用一个只做好一件事的主屏幕取而代之：安静、迅速地把你带到想打开的应用。
+一直运行。OwnTV 用一个只做好一件事的主屏幕取而代之：安静、迅速地把你带到想打开的应用。
 
 ## 功能
 
@@ -74,9 +75,9 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
    开发者选项 中打开 *USB 调试*（如有*网络调试*也一并打开）。在 设置 › 网络 中查看电视的 IP 地址。
 2. **下载本仓库**（绿色 *Code* 按钮 › *Download ZIP*）并解压。
 3. **运行 `3-CAI-LAUNCHER.cmd`。** 首次运行会下载 Java 17 和 Android 构建工具（约 600 MB，10–20 分钟），
-   之后只需几秒。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。Glass Home 会出现在应用列表中；
+   之后只需几秒。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。OwnTV 会出现在应用列表中；
    试用期间主页键仍打开原主屏幕。
-4. **设为主屏幕：** 运行 `4-DAT-LAM-MAN-CHINH.cmd`。脚本会自动按主页键检查，如果没有进入 Glass Home，
+4. **设为主屏幕：** 运行 `4-DAT-LAM-MAN-CHINH.cmd`。脚本会自动按主页键检查，如果没有进入 OwnTV，
    会自动恢复原状。
 
 > 辅助脚本的提示文字为越南语。每个脚本在更改前都会询问、保留备份，并有对应的恢复脚本。
@@ -86,8 +87,8 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
 |---|---|
 | `1-TOI-UU-TV.cmd` | 按组关闭后台、广告和跟踪类应用（索尼列表） |
 | `2-KHOI-PHUC.cmd` | 恢复第 1 步所做的全部更改 |
-| `3-CAI-LAUNCHER.cmd` | 构建并安装 Glass Home，设置时钟屏保 |
-| `4-DAT-LAM-MAN-CHINH.cmd` | 将 Glass Home 设为主屏幕 |
+| `3-CAI-LAUNCHER.cmd` | 构建并安装 OwnTV，设置时钟屏保 |
+| `4-DAT-LAM-MAN-CHINH.cmd` | 将 OwnTV 设为主屏幕 |
 | `5-TRA-LAI-MAN-GOC.cmd` | 恢复原主屏幕 |
 | `6-DO-HIEU-NANG.cmd` | 测量启动时间、掉帧和内存 |
 
@@ -177,7 +178,7 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
   ```
 
 - 后台应用：运行 `2-KHOI-PHUC.cmd`，或 `adb shell cmd package install-existing <包名>`。
-- 卸载 Glass Home：设置 › 应用 › Glass Home › 卸载。
+- 卸载 OwnTV：设置 › 应用 › OwnTV › 卸载。
 
 使用稳定后，请关闭电视上的 USB 调试。
 
@@ -187,12 +188,12 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
 |---|---|---|
 | Sony BRAVIA XR-65X95J | Google TV，Android 12 | 日常使用 |
 
-Glass Home 只使用公开的 Android TV API，应可在任何 Android TV 8.0 及以上设备上运行。如果你在其他型号上
+OwnTV 只使用公开的 Android TV API，应可在任何 Android TV 8.0 及以上设备上运行。如果你在其他型号上
 试用，欢迎提交 issue 说明型号和效果，帮助完善此表。
 
 ## 隐私
 
-Glass Home 不发起任何网络请求，也不包含任何统计分析。它申请位置权限只是因为 Android 要求有此权限才能
+OwnTV 不发起任何网络请求，也不包含任何统计分析。它申请位置权限只是因为 Android 要求有此权限才能
 读取当前连接的 Wi-Fi 名称。
 
 ## 参与贡献
@@ -201,7 +202,7 @@ Glass Home 不发起任何网络请求，也不包含任何统计分析。它申
 
 ## 致谢
 
-Glass Home 源自 Gathin 的 [tv-vibehack](https://github.com/Gathin23/tv-vibehack)。通过 ADB 替换原主屏幕的
+OwnTV 源自 Gathin 的 [tv-vibehack](https://github.com/Gathin23/tv-vibehack)。通过 ADB 替换原主屏幕的
 思路、`tools/` 中的 ADB 工具以及 `examples/` 中由社区整理的应用列表均来自该项目。启动器本身、界面设计
 和 Windows 脚本均为重新编写。
 

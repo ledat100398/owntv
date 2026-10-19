@@ -1,10 +1,11 @@
 <div align="center">
 
-# Glass Home
+# OwnTV
 
-**Màn hình chính tối giản, mang tinh thần Apple TV, cho Android TV và Google TV.**
+### Tivi của bạn. App của bạn. Không gì khác.
 
-Không quảng cáo, không hàng gợi ý, không app chạy ngầm. Chỉ có app của bạn, đồng hồ và kính mờ.
+Màn hình chính nhanh, sạch quảng cáo cho Android TV và Google TV, tinh tế và êm như Apple TV.
+Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 
 [English](README.md) · Tiếng Việt · [简体中文](README.zh-CN.md)
 
@@ -32,7 +33,7 @@ Không quảng cáo, không hàng gợi ý, không app chạy ngầm. Chỉ có 
 ## Vì sao có dự án này
 
 Màn hình chính gốc của Google TV giống một tủ kính bày hàng: hàng nội dung được tài trợ, trailer tự phát,
-cùng hàng chục dịch vụ của hãng khởi động theo tivi và chạy suốt. Glass Home thay nó bằng một màn hình
+cùng hàng chục dịch vụ của hãng khởi động theo tivi và chạy suốt. OwnTV thay nó bằng một màn hình
 chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh và yên tĩnh.
 
 ## Tính năng
@@ -79,16 +80,16 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
 2. **Tải kho này về** (nút xanh *Code* › *Download ZIP*) rồi giải nén.
 3. **Chạy `3-CAI-LAUNCHER.cmd`.** Lần đầu sẽ tự tải Java 17 và bộ dựng Android (khoảng 600 MB, 10–20 phút);
    các lần sau chỉ vài giây. Khi tivi hỏi *Cho phép gỡ lỗi USB?*, tick *Luôn cho phép* rồi đồng ý.
-   Glass Home sẽ nằm trong hàng ứng dụng; nút Home vẫn về màn gốc để bạn dùng thử trước.
+   OwnTV sẽ nằm trong hàng ứng dụng; nút Home vẫn về màn gốc để bạn dùng thử trước.
 4. **Đặt làm màn hình chính:** chạy `4-DAT-LAM-MAN-CHINH.cmd`. Script tự bấm Home để kiểm tra, nếu không
-   ra Glass Home thì tự trả lại như cũ.
+   ra OwnTV thì tự trả lại như cũ.
 
 | Script | Việc làm |
 |---|---|
 | `1-TOI-UU-TV.cmd` | Tắt app chạy ngầm, quảng cáo, theo dõi (danh sách cho Sony), hỏi từng nhóm |
 | `2-KHOI-PHUC.cmd` | Trả lại mọi thứ bước 1 đã đổi |
-| `3-CAI-LAUNCHER.cmd` | Dựng và cài Glass Home, đặt màn hình chờ đồng hồ |
-| `4-DAT-LAM-MAN-CHINH.cmd` | Đặt Glass Home làm màn hình chính |
+| `3-CAI-LAUNCHER.cmd` | Dựng và cài OwnTV, đặt màn hình chờ đồng hồ |
+| `4-DAT-LAM-MAN-CHINH.cmd` | Đặt OwnTV làm màn hình chính |
 | `5-TRA-LAI-MAN-GOC.cmd` | Trả lại màn hình chính gốc |
 | `6-DO-HIEU-NANG.cmd` | Đo thời gian mở, khung hình giật, bộ nhớ |
 
@@ -183,7 +184,7 @@ thay `launcher/app/src/main/res/drawable-nodpi/wallpaper.jpg` (2008 × 1130) r�
   ```
 
 - App chạy ngầm: chạy `2-KHOI-PHUC.cmd`, hoặc `adb shell cmd package install-existing <gói>`.
-- Gỡ Glass Home: Cài đặt › Ứng dụng › Glass Home › Gỡ cài đặt.
+- Gỡ OwnTV: Cài đặt › Ứng dụng › OwnTV › Gỡ cài đặt.
 
 Dùng ổn rồi thì tắt Gỡ lỗi USB trên tivi cho an toàn.
 
@@ -193,12 +194,12 @@ Dùng ổn rồi thì tắt Gỡ lỗi USB trên tivi cho an toàn.
 |---|---|---|
 | Sony BRAVIA XR-65X95J | Google TV, Android 12 | Dùng hằng ngày |
 
-Glass Home chỉ dùng API công khai của Android TV nên chạy được trên mọi thiết bị Android TV 8.0 trở lên.
+OwnTV chỉ dùng API công khai của Android TV nên chạy được trên mọi thiết bị Android TV 8.0 trở lên.
 Nếu bạn thử trên mẫu khác, hãy mở issue ghi tên mẫu và kết quả để bảng này đầy dần.
 
 ## Quyền riêng tư
 
-Glass Home không kết nối mạng và không có bất kỳ phần thu thập dữ liệu nào. App chỉ xin quyền vị trí vì
+OwnTV không kết nối mạng và không có bất kỳ phần thu thập dữ liệu nào. App chỉ xin quyền vị trí vì
 Android bắt buộc quyền này mới cho đọc tên mạng Wi-Fi đang nối.
 
 ## Đóng góp
@@ -207,7 +208,7 @@ Báo lỗi, danh sách app cho tivi khác và pull request đều được hoan 
 
 ## Ghi nhận
 
-Glass Home phát triển từ [tv-vibehack](https://github.com/Gathin23/tv-vibehack) của Gathin. Ý tưởng thay
+OwnTV phát triển từ [tv-vibehack](https://github.com/Gathin23/tv-vibehack) của Gathin. Ý tưởng thay
 màn hình chính qua ADB, công cụ ADB trong `tools/` và các danh sách app do cộng đồng đóng góp trong
 `examples/` đến từ dự án đó. Phần launcher, thiết kế và các script Windows được viết lại từ đầu.
 
