@@ -192,6 +192,13 @@ if ($CheDo -eq 'home') {
 if ($CheDo -eq 'goc') {
     Write-Host 'TRẢ LẠI MÀN HÌNH CHÍNH GỐC CỦA TIVI.' -ForegroundColor Yellow
     $goc = if (Test-Path $ghiGoc) { (Get-Content $ghiGoc -Raw).Trim() } else { GocCoCai }
+    if (-not $goc) {
+        # Chạy từ máy khác (không có sao lưu) và màn gốc đã bị gỡ khỏi người dùng: thử cài lại từng màn gốc đã biết.
+        foreach ($s in $stocks) {
+            $k = TV @("cmd package install-existing $s")
+            if ($k["cmd package install-existing $s"] -match 'installed') { $goc = $s; break }
+        }
+    }
     if (-not $goc) { Loi 'Không tìm thấy màn hình gốc trên tivi.'; exit 1 }
     $k = TV @("cmd package install-existing $phuTro", "cmd package install-existing $goc", "pm enable $goc", "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME $goc")
     $comp = ($k["cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME $goc"] -split "`n" | Where-Object { $_ -match '/' } | Select-Object -Last 1)
