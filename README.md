@@ -95,6 +95,7 @@ does one thing well: get you to the app you want, quickly and quietly.
 | `4-DAT-LAM-MAN-CHINH.cmd` | Makes Glass Home the home screen |
 | `5-TRA-LAI-MAN-GOC.cmd` | Brings back the original home screen |
 | `6-DO-HIEU-NANG.cmd` | Measures start time, dropped frames and memory |
+| `7-KIEM-TRA.cmd` | Runs every remote action on the real TV, then 1,500 random key presses, and reports crashes and memory |
 
 ## Install by hand (any OS)
 

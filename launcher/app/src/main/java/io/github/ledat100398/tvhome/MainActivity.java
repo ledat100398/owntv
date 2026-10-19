@@ -210,7 +210,8 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         blp0.topMargin = wt;
         root.addView(wallBlur, blp0);
 
-        View scrim = new View(this) {
+        // Gentle top and bottom shading over the wallpaper, so the bar and the tiles always read.
+        View shade = new View(this) {
             private final Paint p = new Paint();
 
             @Override
@@ -225,7 +226,7 @@ public class MainActivity extends Activity implements AppAdapter.Host {
                 c.drawRect(0, 0, getWidth(), getHeight(), p);
             }
         };
-        root.addView(scrim, new FrameLayout.LayoutParams(-1, -1));
+        root.addView(shade, new FrameLayout.LayoutParams(-1, -1));
 
         // App grid: five columns, first row at y = 612, tiles 313 x 176 with 42 between them.
         int side = Ui.px(96 - 21);

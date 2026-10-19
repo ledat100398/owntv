@@ -90,6 +90,7 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
 | `4-DAT-LAM-MAN-CHINH.cmd` | 将 Glass Home 设为主屏幕 |
 | `5-TRA-LAI-MAN-GOC.cmd` | 恢复原主屏幕 |
 | `6-DO-HIEU-NANG.cmd` | 测量启动时间、掉帧和内存 |
+| `7-KIEM-TRA.cmd` | 在真机上依次执行各项遥控操作，再随机按键 1,500 次，报告崩溃和内存情况 |
 
 ## 手动安装（任意系统）
 

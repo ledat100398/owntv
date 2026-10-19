@@ -91,6 +91,7 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
 | `4-DAT-LAM-MAN-CHINH.cmd` | Đặt Glass Home làm màn hình chính |
 | `5-TRA-LAI-MAN-GOC.cmd` | Trả lại màn hình chính gốc |
 | `6-DO-HIEU-NANG.cmd` | Đo thời gian mở, khung hình giật, bộ nhớ |
+| `7-KIEM-TRA.cmd` | Chạy thử mọi thao tác remote trên tivi thật, rồi bấm ngẫu nhiên 1.500 phím; báo lỗi văng app và bộ nhớ |
 
 Script nào cũng hỏi trước khi đổi, có sao lưu và có script trả lại tương ứng.
 
