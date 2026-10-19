@@ -10,9 +10,9 @@ Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 [English](README.md) · Tiếng Việt · [简体中文](README.zh-CN.md)
 
 
-<img src="docs/home.jpg" alt="Màn hình chính OwnTV trên tivi Sony BRAVIA XR-65X95J" width="860">
+<img src="docs/home.jpg" alt="Màn hình chính OwnTV" width="860">
 
-<sub>Chụp trên tivi Sony BRAVIA XR-65X95J, kiểu đồng hồ lớn.</sub>
+<sub>Ảnh chụp từ tivi Sony BRAVIA XR-65X95J.</sub>
 
 </div>
 
@@ -40,6 +40,14 @@ Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 Màn hình chính gốc của Google TV giống một tủ kính bày hàng: hàng nội dung được tài trợ, trailer tự phát,
 cùng hàng chục dịch vụ của hãng khởi động theo tivi và chạy suốt. OwnTV thay nó bằng một màn hình
 chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh và yên tĩnh.
+
+## Ảnh màn hình
+
+<table>
+<tr><td><img src="docs/large-clock.jpg" width="420"><br><sub>Kiểu đồng hồ lớn</sub></td><td><img src="docs/top-bar.jpg" width="420"><br><sub>Thanh trên, đang chọn Cài đặt</sub></td></tr>
+<tr><td><img src="docs/inputs.jpg" width="420"><br><sub>Nguồn vào, kèm tên thiết bị HDMI-CEC</sub></td><td><img src="docs/settings.jpg" width="420"><br><sub>Cài đặt</sub></td></tr>
+<tr><td><img src="docs/wifi.jpg" width="420"><br><sub>Tình trạng mạng</sub></td><td><img src="docs/app-menu.jpg" width="420"><br><sub>Giữ OK trên một app</sub></td></tr>
+</table>
 
 ## Tính năng
 
@@ -223,3 +231,5 @@ Biểu tượng bánh răng theo [Lucide](https://lucide.dev) (ISC).
 ## Giấy phép
 
 [MIT](LICENSE) © 2026 Lê Trí Thành Đạt, kèm ghi nhận bản quyền gốc của tv-vibehack © 2026 Gathin.
+
+<sub>Tên và logo app trong ảnh thuộc về chủ sở hữu tương ứng. OwnTV là dự án độc lập, không liên kết hay được bảo trợ bởi Google, Sony, Netflix, Amazon hay bất kỳ app nào xuất hiện trong ảnh.</sub>

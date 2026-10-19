@@ -10,9 +10,9 @@ No sponsored rows, no autoplay, nothing running in the background.
 English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
 
-<img src="docs/home.jpg" alt="OwnTV home screen on a Sony BRAVIA XR-65X95J" width="860">
+<img src="docs/home.jpg" alt="OwnTV home screen" width="860">
 
-<sub>Photographed on a Sony BRAVIA XR-65X95J, large-clock style.</sub>
+<sub>Screenshot from a Sony BRAVIA XR-65X95J.</sub>
 
 </div>
 
@@ -40,6 +40,14 @@ English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 The stock Google TV home screen is a shop window: sponsored rows, autoplaying trailers and a dozen
 vendor services that start with the TV and never stop. OwnTV replaces it with a home screen that
 does one thing well: get you to the app you want, quickly and quietly.
+
+## Screenshots
+
+<table>
+<tr><td><img src="docs/large-clock.jpg" width="420"><br><sub>Large clock style</sub></td><td><img src="docs/top-bar.jpg" width="420"><br><sub>Top bar, Settings focused</sub></td></tr>
+<tr><td><img src="docs/inputs.jpg" width="420"><br><sub>Inputs, with HDMI-CEC device names</sub></td><td><img src="docs/settings.jpg" width="420"><br><sub>Settings</sub></td></tr>
+<tr><td><img src="docs/wifi.jpg" width="420"><br><sub>Wi-Fi status</sub></td><td><img src="docs/app-menu.jpg" width="420"><br><sub>Hold OK on an app</sub></td></tr>
+</table>
 
 ## Features
 
@@ -227,3 +235,5 @@ Gear icon after [Lucide](https://lucide.dev) (ISC).
 ## Licence
 
 [MIT](LICENSE) © 2026 Lê Trí Thành Đạt, with the original tv-vibehack notice © 2026 Gathin.
+
+<sub>App names and logos in the screenshots belong to their respective owners. OwnTV is an independent project and is not affiliated with or endorsed by Google, Sony, Netflix, Amazon or any app shown.</sub>

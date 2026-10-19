@@ -10,9 +10,9 @@
 [English](README.md) · [Tiếng Việt](README.vi.md) · 简体中文
 
 
-<img src="docs/home.jpg" alt="OwnTV 主屏幕，索尼 BRAVIA XR-65X95J 实拍" width="860">
+<img src="docs/home.jpg" alt="OwnTV 主屏幕" width="860">
 
-<sub>拍摄于索尼 BRAVIA XR-65X95J，大时钟样式。</sub>
+<sub>截图来自索尼 BRAVIA XR-65X95J。</sub>
 
 </div>
 
@@ -39,6 +39,14 @@
 
 Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的预告片，还有十几个厂商服务随电视启动、
 一直运行。OwnTV 用一个只做好一件事的主屏幕取而代之：安静、迅速地把你带到想打开的应用。
+
+## 截图
+
+<table>
+<tr><td><img src="docs/large-clock.jpg" width="420"><br><sub>大时钟样式</sub></td><td><img src="docs/top-bar.jpg" width="420"><br><sub>顶部栏，选中设置</sub></td></tr>
+<tr><td><img src="docs/inputs.jpg" width="420"><br><sub>信号源，显示 HDMI-CEC 设备名称</sub></td><td><img src="docs/settings.jpg" width="420"><br><sub>设置</sub></td></tr>
+<tr><td><img src="docs/wifi.jpg" width="420"><br><sub>网络状态</sub></td><td><img src="docs/app-menu.jpg" width="420"><br><sub>在应用上长按 OK</sub></td></tr>
+</table>
 
 ## 功能
 
@@ -217,3 +225,5 @@ OwnTV 源自 Gathin 的 [tv-vibehack](https://github.com/Gathin23/tv-vibehack)�
 ## 许可证
 
 [MIT](LICENSE) © 2026 Lê Trí Thành Đạt，并保留 tv-vibehack 原版权声明 © 2026 Gathin。
+
+<sub>截图中的应用名称和标志归各自所有者所有。OwnTV 是独立项目，与 Google、索尼、Netflix、亚马逊或截图中出现的任何应用均无关联，也未获其认可。</sub>
