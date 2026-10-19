@@ -766,12 +766,16 @@ public class MainActivity extends Activity implements AppAdapter.Host {
      * left the rows stranded halfway up the screen; measuring every time cannot drift.
      */
     private int currentOffset() {
-        if (!(grid.getLayoutManager() instanceof GridLayoutManager) || grid.getChildCount() == 0) return 0;
-        GridLayoutManager g = (GridLayoutManager) grid.getLayoutManager();
-        int first = g.findFirstVisibleItemPosition();
-        View v = first == RecyclerView.NO_POSITION ? null : g.findViewByPosition(first);
-        if (v == null) return 0;
-        return (first / COLS) * v.getHeight() + grid.getPaddingTop() - v.getTop();
+        // Read any laid-out tile directly. findFirstVisibleItemPosition() cannot be used here: the grid's
+        // bottom padding is a full screen, so the "visible" band between the paddings is empty and it
+        // always answered NO_POSITION, which made every deep scroll overshoot until the grid ran away.
+        for (int i = 0, c = grid.getChildCount(); i < c; i++) {
+            View v = grid.getChildAt(i);
+            int pos = grid.getChildAdapterPosition(v);   // NO_POSITION for a tile animating out
+            if (pos == RecyclerView.NO_POSITION || v.getHeight() == 0) continue;
+            return (pos / COLS) * v.getHeight() + grid.getPaddingTop() - v.getTop();
+        }
+        return 0;
     }
 
     /** The wallpaper glides a little against the focus: near layers seem to move, the scene gains depth. */
@@ -1374,6 +1378,22 @@ public class MainActivity extends Activity implements AppAdapter.Host {
     private void hideHint() {
         if (moving || hint.getVisibility() != View.VISIBLE) return;
         hint.animate().alpha(0f).setDuration(300).withEndAction(() -> hint.setVisibility(View.GONE)).start();
+    }
+
+    /**
+     * Safety net: if the focused tile ever scrolls away and is recycled before the next one arrives,
+     * nothing on screen holds focus and the remote would seem dead. Put focus back on the first press.
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        if (getCurrentFocus() == null && isDpad(e.getKeyCode()) && e.getAction() == KeyEvent.ACTION_DOWN
+                && !panelOpen && !zoom.isBusy() && adapter.getItemCount() > 0) {
+            if (inBar) focusPill(barIndex, false);
+            else if (pendingFocus >= 0) focusTile(pendingFocus, false);
+            else restoreFocus();
+            return true;
+        }
+        return super.dispatchKeyEvent(e);
     }
 
     /** Back steps back exactly once: close the panel, cancel a move, leave the bar, return to row one. */
