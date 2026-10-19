@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'io.github.ledat100398.tvhome'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'io.github.ledat100398.tvhome'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        // The launcher is sideloaded over ADB, never published to Google Play, so Play's minimum targetSdk
+        // does not apply; without this, lintVitalRelease fails assembleRelease.
+        disable 'ExpiredTargetSdkVersion'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+}

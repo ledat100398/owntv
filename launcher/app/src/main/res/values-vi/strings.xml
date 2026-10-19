@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Glass Home</string>
+    <string name="inputs">Nguồn vào</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="ethernet">Mạng dây</string>
+    <string name="offline">Mất mạng</string>
+    <string name="settings">Cài đặt</string>
+    <string name="live_tv">Truyền hình</string>
+    <string name="no_inputs">Không thấy nguồn vào</string>
+    <string name="move">Di chuyển</string>
+    <string name="hide">Ẩn khỏi màn hình</string>
+    <string name="app_info">Thông tin app</string>
+    <string name="show_hidden">Hiện lại app đã ẩn</string>
+    <string name="stock_home">Màn hình chính gốc</string>
+    <string name="not_available">Tivi này không có mục này</string>
+    <string name="cant_open">Không mở được %1$s</string>
+    <string name="hint_move">◀ ▶ ▲ ▼ để dời  ·  OK để đặt  ·  Back để hủy</string>
+    <string name="hint_hold">Giữ OK để dời, ẩn hoặc xem thông tin app</string>
+    <string name="dream_name">Đồng hồ</string>
+    <string name="connected_internet">Đã kết nối Internet</string>
+    <string name="no_internet">Đã nối mạng nhưng chưa vào được Internet</string>
+    <string name="not_connected">Chưa kết nối mạng</string>
+    <string name="network_settings">Cài đặt mạng</string>
+    <string name="picture">Hình ảnh</string>
+    <string name="sound">Âm thanh</string>
+    <string name="sleep_timer">Hẹn giờ tắt</string>
+    <string name="home_style">Màn hình chính</string>
+    <string name="style_compact">Gọn</string>
+    <string name="style_clock">Đồng hồ lớn</string>
+    <string name="all_settings">Tất cả cài đặt</string>
+    <string name="date_format" translatable="false">EEEE, d \'tháng\' M</string>
+</resources>

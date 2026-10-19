@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="spring_sx" type="id" />
+    <item name="spring_sy" type="id" />
+    <item name="spring_tx" type="id" />
+    <item name="spring_ty" type="id" />
+    <item name="spring_a" type="id" />
+    <item name="caption_tx" type="id" />
+    <item name="bump" type="id" />
+    <item name="bump_fade" type="id" />
+</resources>

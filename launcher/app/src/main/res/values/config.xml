@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Launcher configuration. Edit, then rebuild.
+  Package names: on the TV run `pm list packages`.
+  The order set on the TV itself (hold OK > Move) wins over this list once you have moved anything.
+  Packages that are not installed are simply skipped, so these lists are safe on any Android TV.
+-->
+<resources>
+    <!-- First apps in the grid, in this order. Missing apps are skipped. -->
+    <string-array name="dock_apps">
+        <item>com.google.android.youtube.tv</item>
+        <item>com.netflix.ninja</item>
+        <item>com.viettel.tv360.tv</item>
+        <item>net.fptplay.ottbox</item>
+    </string-array>
+
+    <!-- Never shown as tiles: the Live TV app is already under Inputs. -->
+    <string-array name="hidden_apps">
+        <item>com.sony.dtv.tvx</item>
+        <item>com.sony.dtv.tvxlauncher.programguide</item>
+        <!-- Sony tools that already live in Settings; keep Home to the apps you watch. -->
+        <item>com.sony.dtv.ecodashboard</item>
+        <item>com.sony.dtv.timers</item>
+        <item>com.sony.dtv.notificationcenter</item>
+        <item>com.sony.dtv.kenhchonloc</item>
+    </string-array>
+
+    <!-- The TV's own Live TV app, offered at the end of Inputs: the first one installed is used. -->
+    <string-array name="live_tv_apps">
+        <item>com.sony.dtv.tvx</item>
+        <item>com.google.android.tv</item>
+        <item>com.android.tv</item>
+        <item>com.mediatek.wwtv.tvcenter</item>
+    </string-array>
+
+    <!-- The TV's sleep-timer app, if it has one, for Settings > Sleep timer. -->
+    <string-array name="sleep_timer_apps">
+        <item>com.sony.dtv.timers</item>
+    </string-array>
+
+    <!-- The TV's own home screen, offered in Settings while it is installed. Google TV first, then Android TV. -->
+    <string-array name="stock_launchers">
+        <item>com.google.android.apps.tv.launcherx</item>
+        <item>com.google.android.tvlauncher</item>
+    </string-array>
+</resources>

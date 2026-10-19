@@ -1,0 +1,46 @@
+# Danh sách gói có thể TẮT trên tivi Sony BRAVIA (Android TV / Google TV), gộp từ 2 danh sách Sony
+# đã thử (X900E Android 9, UR2 Android 10) và bỏ các app chỉ có ở Mỹ.
+# Cột: gói <TAB> nhóm <TAB> mô tả. Gói không có trên tivi sẽ được bỏ qua.
+# Các gói được gỡ khỏi người dùng (pm uninstall -k --user 0), bản gốc vẫn nằm trong tivi; 2-KHOI-PHUC.cmd trả lại đúng những gói đã gỡ.
+#
+# KHÔNG BAO GIỜ thêm vào đây: com.sony.dtv.tvx (xem HDMI/ăng-ten), com.sony.dtv.tvinput.*,
+# com.sony.dtv.braviasync* (HDMI-CEC), remotepairing / rcpowerkey / uinputservice (điều khiển),
+# imeproxy (bàn phím), sonysystemservice, settingsprovider, com.mediatek.*, com.android.vending
+# (CH Play), com.google.android.gms, Bluetooth, timers (hẹn giờ tắt), smartmediaapp (xem USB),
+# com.google.android.apps.tv.launcherx (màn hình chính gốc của Google TV: chỉ tắt bằng 4-DAT-LAM-MAN-CHINH.cmd).
+#
+# Nhóm 1-4 mặc định TẮT, nhóm 5-6 mặc định GIỮ. Script vẫn hỏi từng nhóm.
+
+tv.samba.ssm	1	Samba TV - ghi lại nội dung đang chiếu để bán quảng cáo
+com.sony.dtv.promos	1	My BRAVIA - quảng cáo khuyến mãi của Sony
+com.sony.dtv.sonyselect	1	Sony Select - ô giới thiệu app trả tiền đặt chỗ
+com.sony.dtv.discovery	1	Thanh Discover - gợi ý nội dung
+com.sony.dtv.bivlinfo	1	Dữ liệu nuôi thanh Discover
+com.sony.dtv.tvlaunchercustomizer	1	Hàng gợi ý Sony chèn vào màn hình chính
+com.google.android.tvrecommendations	1	Hàng gợi ý / quảng cáo của Google trên màn hình chính
+android.autoinstalls.config.sony.bravia	1	Tự cài app đối tác qua CH Play
+com.sony.dtv.da.service	1	Dịch vụ thu thập & hỗ trợ từ xa của Sony
+com.qterics.da.product	1	Dịch vụ thu thập dữ liệu Qterics
+com.sonyericsson.idd.agent	1	Gửi số liệu sử dụng về Sony
+com.sony.dtv.demomode	2	Chế độ trưng bày ở cửa hàng
+com.sony.dtv.demosupport	2	Chế độ trưng bày (phụ trợ)
+com.sony.dtv.demosystemsupport	2	Chế độ trưng bày (hệ thống)
+com.sony.dtv.multiscreendemo	2	Video demo nhiều màn hình
+com.sony.dtv.sonybugreportsys	3	Gửi báo lỗi về Sony
+com.google.android.tv.bugreportsender	3	Gửi báo lỗi về Google
+com.google.android.feedback	3	Gửi phản hồi về Google
+com.google.android.play.games	4	Google Play Games
+com.google.android.videos	4	Google TV / Play Phim (thuê phim của Google)
+com.google.android.youtube.tvmusic	4	YouTube Music (giữ nếu hay nghe nhạc trên tivi)
+com.sony.dtv.imanual	4	Sách hướng dẫn điện tử i-Manual
+com.sony.dtv.customersupport	4	Ô Trợ giúp
+com.sony.dtv.smarthelp	4	Trợ giúp thông minh
+com.google.android.backdrop	4	Màn hình chờ ảnh phong cảnh (Ambient, Android TV)
+com.google.android.apps.tv.dreamx	4	Màn hình chờ ảnh của Google TV (đã có màn chờ Đồng hồ thay)
+com.google.android.katniss	5	Tìm bằng giọng nói của Google (nút micro trên điều khiển)
+com.google.android.tv.assistant	5	Google Assistant
+com.sony.dtv.assistantadapter	5	Cầu nối Assistant của Sony
+com.google.android.apps.mediashell	6	Chromecast - bấm nút chiếu YouTube/video từ điện thoại lên tivi
+screnmirroring.com	6	Chiếu màn hình điện thoại (Miracast)
+com.sony.dtv.networkapp.wifidirect	6	Wi-Fi Direct (dùng cho chiếu màn hình)
+com.google.android.tv.remote.service	6	Điều khiển tivi bằng app Google TV trên điện thoại

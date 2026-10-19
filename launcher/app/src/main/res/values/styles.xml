@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TvHome" parent="android:Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@drawable/wallpaper</item>
+        <item name="android:colorBackground">#FF0B0B0F</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDisablePreview">false</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+</resources>

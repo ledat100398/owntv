@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Glass Home</string>
+    <string name="inputs">Inputs</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="ethernet">Ethernet</string>
+    <string name="offline">Offline</string>
+    <string name="settings">Settings</string>
+    <string name="live_tv">Live TV</string>
+    <string name="no_inputs">No inputs found</string>
+    <string name="move">Move</string>
+    <string name="hide">Hide from Home</string>
+    <string name="app_info">App info</string>
+    <string name="show_hidden">Show hidden apps</string>
+    <string name="stock_home">Original Home screen</string>
+    <string name="not_available">Not available on this TV</string>
+    <string name="cant_open">Can\'t open %1$s</string>
+    <string name="hint_move">Arrows to move  ·  OK to drop  ·  Back to cancel</string>
+    <string name="hint_hold">Hold OK to move, hide or see app info</string>
+    <string name="dream_name">Clock</string>
+    <string name="connected_internet">Connected to the internet</string>
+    <string name="no_internet">Connected, but no internet</string>
+    <string name="not_connected">Not connected</string>
+    <string name="network_settings">Network settings</string>
+    <string name="picture">Picture</string>
+    <string name="sound">Sound</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="home_style">Home screen</string>
+    <string name="style_compact">Compact</string>
+    <string name="style_clock">Large clock</string>
+    <string name="all_settings">All settings</string>
+    <string name="date_format" translatable="false">EEEE, MMMM d</string>
+</resources>
