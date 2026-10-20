@@ -3,7 +3,13 @@
 $ps = Join-Path $PSHOME 'powershell.exe'
 function Chay($tep, $cheDo) {
     & $ps -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot $tep) $cheDo
-    return $LASTEXITCODE
+    $ma = $LASTEXITCODE
+    if ($ma -ne 0) {
+        Write-Host ''
+        Write-Host "  Dừng lại với mã lỗi $ma (stopped, exit code $ma)." -ForegroundColor Red
+        Write-Host "  Chụp cửa sổ này gửi lên GitHub Issues (take a screenshot and open an issue)."
+    }
+    return $ma
 }
 while ($true) {
     Clear-Host
