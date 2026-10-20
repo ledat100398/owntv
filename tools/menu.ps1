@@ -2,8 +2,12 @@
 . (Join-Path $PSScriptRoot 'console.ps1')
 $ps = Join-Path $PSHOME 'powershell.exe'
 function Chay($tep, $cheDo) {
-    & $ps -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot $tep) $cheDo
-    $ma = $LASTEXITCODE
+    # Start-Process, not "& powershell ...": called inside a function whose result is used, PowerShell would
+    # capture the child's whole output as the return value, so nothing showed on screen but the questions.
+    $tepDu = Join-Path $PSScriptRoot $tep
+    $p = Start-Process -FilePath $ps -NoNewWindow -Wait -PassThru `
+        -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$tepDu`"", $cheDo)
+    $ma = $p.ExitCode
     if ($ma -ne 0) {
         Write-Host ''
         Write-Host "  Dừng lại với mã lỗi $ma (stopped, exit code $ma)." -ForegroundColor Red

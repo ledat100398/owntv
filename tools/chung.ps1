@@ -83,6 +83,22 @@ function ChuanBiPython {
             $c = TimPython
         }
         if (-not $c) {
+            # Máy không có winget (Windows 10 cũ, bản LTSC): tải bộ cài chính thức từ python.org, cài lặng lẽ cho
+            # riêng người dùng này (không cần quyền quản trị).
+            Write-Host 'Tải Python 3.12 từ python.org (khoảng 25 MB)...'
+            try {
+                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                $ProgressPreference = 'SilentlyContinue'
+                New-Item -ItemType Directory -Force $taiTam | Out-Null
+                $bo = Join-Path $taiTam 'python-3.12.7-amd64.exe'
+                Invoke-WebRequest 'https://www.python.org/ftp/python/3.12.7/python-3.12.7-amd64.exe' -OutFile $bo -UseBasicParsing
+                Write-Host 'Đang cài Python (1-2 phút)...'
+                Start-Process -FilePath $bo -ArgumentList '/quiet', 'InstallAllUsers=0', 'PrependPath=1', 'Include_test=0' -Wait
+                XoaTep $bo
+            } catch { Loi "Tải hoặc cài Python lỗi: $($_.Exception.Message)" }
+            $c = TimPython
+        }
+        if (-not $c) {
             Write-Host 'Tải ở https://www.python.org/downloads/ , lúc cài nhớ tick "Add python.exe to PATH", rồi chạy lại.'
             exit 1
         }
