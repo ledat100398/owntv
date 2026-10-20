@@ -377,13 +377,25 @@ public class VoiceActivity extends Activity {
             launch(app);
             return;
         }
-        if (searchYouTube(best)) chime.end();
+        if (searchYouTube(withoutVerb(best))) chime.end();
         else fail(R.string.voice_no_youtube);
     }
 
     /** Words people put before an app's name: "mở YouTube", "open Netflix", "打开 YouTube". */
     private static final String[] VERBS = {"mo ung dung ", "mo app ", "mo ", "bat ", "vao ", "chay ", "xem ",
             "open ", "launch ", "start ", "打开", "启动"};
+
+    /** "Mở bóng đá" searches YouTube for "bóng đá": the command word is not part of what to look for. */
+    static String withoutVerb(String said) {
+        String n = norm(said);
+        for (String v : VERBS) {
+            if (!n.startsWith(v) || n.length() == v.length()) continue;
+            int words = v.trim().split(" ").length;
+            String[] parts = said.trim().split("\\s+", words + 1);
+            if (parts.length > words) return parts[words];
+        }
+        return said;
+    }
 
     private Intent matchApp(List<String> said) {
         PackageManager pm = getPackageManager();
