@@ -81,7 +81,8 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
 - Tivi hoặc box chạy **Android TV hoặc Google TV 8.0 trở lên** (Sony, TCL, Xiaomi, Philips, Hisense,
   NVIDIA Shield, Chromecast with Google TV...). Tivi Samsung (Tizen) và LG (webOS) không chạy Android
   nên không dùng được.
-- Bật **Tùy chọn cho nhà phát triển** và gỡ lỗi qua mạng (xem bên dưới).
+- Bật **Tùy chọn cho nhà phát triển** và gỡ lỗi qua mạng (xem bên dưới). Tivi Android 11 trở lên chỉ có
+  *Gỡ lỗi không dây* thì mục 1 sẽ hướng dẫn ghép đôi bằng mã.
 - Một máy tính cùng mạng với tivi. Các file bấm-là-chạy dành cho **Windows 10/11**; trên macOS hoặc
   Linux thì làm theo phần cài thủ công.
 

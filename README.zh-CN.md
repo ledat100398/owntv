@@ -79,7 +79,7 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
 - 运行 **Android TV 或 Google TV 8.0 及以上**的电视或盒子（索尼、TCL、小米、飞利浦、海信、
   NVIDIA Shield、Chromecast with Google TV 等）。三星（Tizen）和 LG（webOS）电视不运行 Android，
   不受支持。
-- 打开**开发者选项**和网络调试（见下文）。
+- 打开**开发者选项**和网络调试（见下文）。Android 11 及以上的电视如果只有*无线调试*，第 1 项会引导你用配对码完成配对。
 - 一台与电视处于同一网络的电脑。一键脚本适用于 **Windows 10/11**；macOS 或 Linux 请按手动步骤操作。
 
 ## 在 Windows 上安装

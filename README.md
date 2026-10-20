@@ -81,7 +81,8 @@ does one thing well: get you to the app you want, quickly and quietly.
 - A TV or box running **Android TV or Google TV 8.0 or newer** (Sony, TCL, Xiaomi, Philips, Hisense,
   NVIDIA Shield, Chromecast with Google TV and others).
   Samsung (Tizen) and LG (webOS) TVs do not run Android and are not supported.
-- **Developer options** with network debugging switched on (steps below).
+- **Developer options** with network debugging switched on (steps below). On Android 11 and newer, if your TV
+  only offers *Wireless debugging*, option 1 walks you through pairing it with a code.
 - A computer on the same network. The one-click scripts are for **Windows 10/11**; on macOS or Linux
   use the manual steps.
 

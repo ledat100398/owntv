@@ -76,6 +76,47 @@ function CongMo($ip) {
     catch { return $false } finally { $c.Close() }
 }
 
+# Tivi Android 11 trở lên thường không mở cổng 5555 nữa mà dùng "Gỡ lỗi không dây" có mã ghép đôi.
+# Dùng adb chính hãng để ghép đôi một lần, rồi "adb tcpip 5555" mở lại cổng 5555 (tới lần khởi động lại sau).
+function TimAdb {
+    foreach ($a in @((Join-Path $env:LOCALAPPDATA 'Android\Sdk\platform-tools\adb.exe'), (Join-Path $repo 'tools\platform-tools\adb.exe'))) {
+        if (Test-Path $a) { return $a }
+    }
+    Write-Host 'Tải công cụ ADB của Google (khoảng 7 MB)...'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $ProgressPreference = 'SilentlyContinue'
+    $zip = Join-Path $env:TEMP 'platform-tools.zip'
+    Invoke-WebRequest 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip' -OutFile $zip -UseBasicParsing
+    Expand-Archive -Force $zip (Join-Path $repo 'tools')
+    Remove-Item -Force $zip
+    return (Join-Path $repo 'tools\platform-tools\adb.exe')
+}
+
+function SoCong($s) { if ("$s" -match '(\d{2,5})\s*$') { return $Matches[1] } return $null }
+
+function GhepKhongDay($ip) {
+    Tieude 'Kết nối bằng Gỡ lỗi không dây (tivi Android 11 trở lên)'
+    Write-Host 'Trên tivi: Tùy chọn nhà phát triển > Gỡ lỗi không dây > bật lên, rồi chọn "Ghép nối thiết bị bằng mã".'
+    Write-Host 'Tivi hiện một mã 6 số và một dòng "IP:cổng". Giữ nguyên màn đó.'
+    $ErrorActionPreference = 'Continue'
+    try { $adb = TimAdb } catch { Loi 'Không tải được ADB (kiểm tra mạng).'; return $false }
+    $cp = SoCong (Read-Host '  Cổng ghép nối (số sau dấu hai chấm trên màn có mã, vd 37123)')
+    $ma = ((Read-Host '  Mã ghép nối 6 số') -replace '\D', '')
+    if (-not $cp -or -not $ma) { Loi 'Thiếu cổng hoặc mã.'; return $false }
+    & $adb pair "$($ip):$cp" $ma
+    Write-Host 'Quay về màn "Gỡ lỗi không dây": dòng "Địa chỉ IP và cổng" có một cổng khác.'
+    $cc = SoCong (Read-Host '  Cổng ở dòng "Địa chỉ IP và cổng" (vd 41567)')
+    if (-not $cc) { Loi 'Thiếu cổng.'; return $false }
+    & $adb connect "$($ip):$cc"
+    & $adb -s "$($ip):$cc" tcpip 5555
+    Start-Sleep -Seconds 4
+    & $adb kill-server 2>$null | Out-Null
+    $ErrorActionPreference = 'Stop'
+    if (CongMo $ip) { Ok 'Đã mở cổng 5555. Tivi sẽ hỏi "Cho phép gỡ lỗi USB?": tick "Luôn cho phép" > OK.'; return $true }
+    Loi 'Vẫn chưa mở được cổng 5555.'
+    return $false
+}
+
 function ChonIp {
     $f = Join-Path $saoLuu 'tv-ip.txt'
     $cu = if (Test-Path $f) { (Get-Content $f -Raw).Trim() } else { '' }
@@ -93,6 +134,9 @@ function ChonIp {
         if (-not $ok) { Loi "IP không đúng dạng: '$ip'. Gõ 4 cụm số cách nhau dấu chấm, vd 192.168.1.50"; $cu = ''; continue }
         if (CongMo $ip) { Set-Content $f $ip; return $ip }
         Loi "Không vào được tivi $ip (cổng 5555)."
+        if (-not $TuDong -and (Hoi '  Tivi có mục "Gỡ lỗi không dây" (Android 11 trở lên)? Thử kết nối bằng mã ghép đôi' $true)) {
+            if (GhepKhongDay $ip) { Set-Content $f $ip; return $ip }
+        }
         Write-Host '  Kiểm tra: tivi đang bật, cùng mạng với máy tính (không dùng Wi-Fi khách), đã bật Gỡ lỗi USB'
         Write-Host '  và cả Gỡ lỗi qua mạng nếu tivi có mục đó. Đúng IP thì tivi sẽ hỏi "Cho phép gỡ lỗi USB?".'
         Write-Host '  (Cài đặt > Tùy chọn thiết bị > Giới thiệu > bấm Bản dựng 7 lần > Tùy chọn nhà phát triển).'
