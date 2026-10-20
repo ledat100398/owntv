@@ -32,14 +32,11 @@
     <string name="date_format" translatable="false">EEEE, MMMM d</string>
     <string name="voice_name">Voice search</string>
     <string name="voice_listening">Listening…</string>
-    <string name="voice_hint">Say an app name, or what to find on YouTube</string>
     <string name="voice_thinking">One moment…</string>
-    <string name="voice_searching">Searching YouTube…</string>
-    <string name="voice_not_heard">Didn\'t catch that</string>
-    <string name="voice_retry">Press the microphone or OK to try again</string>
-    <string name="voice_need_mic">Allow the microphone to use voice search</string>
+    <string name="voice_not_heard">Didn\'t catch that. Press mic to retry</string>
+    <string name="voice_need_mic">Allow the microphone first</string>
     <string name="voice_no_permission">No microphone permission</string>
     <string name="voice_no_network">Voice search needs the internet</string>
-    <string name="voice_unavailable">Voice recognition isn\'t available on this TV</string>
+    <string name="voice_unavailable">No speech recognition on this TV</string>
     <string name="voice_no_youtube">YouTube isn\'t installed</string>
 </resources>

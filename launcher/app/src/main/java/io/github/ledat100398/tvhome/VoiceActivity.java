@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -44,18 +46,28 @@ public class VoiceActivity extends Activity {
 
     private static final String YOUTUBE = "com.google.android.youtube.tv";
     private static final int ASK_MIC = 1;
+    private static final int LISTENING = 0, THINKING = 1, MISSED = 2, LEAVING = 3;
+    private static final android.view.animation.Interpolator EASE_OUT = new PathInterpolator(0.2f, 0f, 0f, 1f);
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SpeechRecognizer recognizer;
-    private View panel, mic;
-    private TextView title, heard;
-    private boolean done, asking;
+    private View scrim, panel;
+    private TextView line;
+    private VoiceWave wave;
+    private android.animation.ValueAnimator breathe, fade;
+    private Chime chime;
+    private String shown = "";
+    private int phase = LISTENING;
+    private boolean asking, blur;
+    private long startedAt;
 
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         Ui.init(this);
+        chime = new Chime(this);
         buildView();
+        enter();
         handle(getIntent());
     }
 
@@ -63,7 +75,8 @@ public class VoiceActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        handle(intent);
+        // The microphone pressed again reaches us here when the system routes it as "assist".
+        toggle();
     }
 
     private void handle(Intent intent) {
@@ -76,66 +89,165 @@ public class VoiceActivity extends Activity {
         start();
     }
 
+    /** Microphone pressed while the bar is up: listening stops it, a miss listens again. */
+    private void toggle() {
+        if (SystemClock.uptimeMillis() - startedAt < 600) return;   // the same press that opened us
+        if (phase == MISSED) start();
+        else if (phase != LEAVING) {
+            if (recognizer != null) recognizer.cancel();
+            chime.end();
+            close();
+        }
+    }
+
     // ---- view ------------------------------------------------------------------------------------
 
     private void buildView() {
         FrameLayout root = new FrameLayout(this);
+        scrim = new View(this);
+        scrim.setBackgroundColor(0x66000000);
+        root.addView(scrim, new FrameLayout.LayoutParams(-1, -1));
+
+        // One capsule that never changes size: microphone, one line of words, the wave.
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.HORIZONTAL);
         box.setGravity(Gravity.CENTER_VERTICAL);
-        box.setPadding(Ui.px(28), Ui.px(24), Ui.px(48), Ui.px(24));
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xEB1C1E25);
-        bg.setCornerRadius(Ui.f(64));
-        box.setBackground(bg);
-        box.setElevation(Ui.f(24));
+        box.setPadding(Ui.px(20), 0, Ui.px(28), 0);
+        blur = android.os.Build.VERSION.SDK_INT >= 31 && getWindowManager().isCrossWindowBlurEnabled();
+        box.setBackground(capsule(blur ? 0xC71C1E25 : 0xF01C1E25));
+        box.setElevation(Ui.f(18));
+        box.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
 
         FrameLayout micWrap = new FrameLayout(this);
-        mic = new View(this);
-        mic.setBackground(new Droplet(Ui.f(40)));
-        micWrap.addView(mic, new FrameLayout.LayoutParams(Ui.px(80), Ui.px(80), Gravity.CENTER));
+        View drop = new View(this);
+        drop.setBackground(new Droplet(Ui.f(36)));
+        micWrap.addView(drop, new FrameLayout.LayoutParams(-1, -1));
         ImageView icon = new ImageView(this);
         icon.setImageResource(R.drawable.ic_mic);
         icon.setColorFilter(Ui.DARK);
-        micWrap.addView(icon, new FrameLayout.LayoutParams(Ui.px(40), Ui.px(40), Gravity.CENTER));
-        box.addView(micWrap, new LinearLayout.LayoutParams(Ui.px(80), Ui.px(80)));
+        micWrap.addView(icon, new FrameLayout.LayoutParams(Ui.px(34), Ui.px(34), Gravity.CENTER));
+        box.addView(micWrap, new LinearLayout.LayoutParams(Ui.px(72), Ui.px(72)));
 
-        LinearLayout words = new LinearLayout(this);
-        words.setOrientation(LinearLayout.VERTICAL);
-        title = Ui.text(this, 34, true, Ui.INK);
-        heard = Ui.text(this, 26, false, Ui.INK_DIM);
-        heard.setMaxLines(2);
-        heard.setEllipsize(TextUtils.TruncateAt.END);
-        words.addView(title);
-        words.addView(heard);
-        LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(Ui.px(620), -2);
-        wl.leftMargin = Ui.px(28);
-        box.addView(words, wl);
+        line = Ui.text(this, 34, false, Ui.INK);
+        line.setSingleLine(true);
+        LinearLayout.LayoutParams ll = new LinearLayout.LayoutParams(Ui.px(592), -2);
+        ll.leftMargin = Ui.px(24);
+        ll.rightMargin = Ui.px(24);
+        box.addView(line, ll);
 
-        FrameLayout.LayoutParams bl = new FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        wave = new VoiceWave(this);
+        box.addView(wave, new LinearLayout.LayoutParams(Ui.px(80), Ui.px(56)));
+
+        FrameLayout.LayoutParams bl = new FrameLayout.LayoutParams(Ui.px(840), Ui.px(112),
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         bl.bottomMargin = Ui.px(96);
         root.addView(box, bl);
         panel = box;
         setContentView(root);
-
-        panel.setAlpha(0f);
-        panel.setTranslationY(Ui.f(60));
-        panel.animate().alpha(1f).translationY(0).setDuration(320)
-                .setInterpolator(new PathInterpolator(0.3f, 1.32f, 0.5f, 1f)).start();
     }
 
-    private void show(int titleRes, String detail) {
-        title.setText(titleRes);
-        heard.setText(detail != null ? detail : "");
+    /** Dark frosted glass: a tint, light pooling softly at the top, and a hairline rim. */
+    private static android.graphics.drawable.Drawable capsule(int tint) {
+        float rad = Ui.f(56);
+        GradientDrawable base = new GradientDrawable();
+        base.setColor(tint);
+        base.setCornerRadius(rad);
+        GradientDrawable light = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0x14FFFFFF, 0x05FFFFFF, 0x00FFFFFF});
+        light.setCornerRadius(rad);
+        GradientDrawable rim = new GradientDrawable();
+        rim.setColor(0);
+        rim.setCornerRadius(rad);
+        rim.setStroke(Math.max(1, Ui.px(1.5f)), 0x1AFFFFFF);
+        return new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{base, light, rim});
+    }
+
+    private void enter() {
+        scrim.setAlpha(0f);
+        scrim.animate().alpha(1f).setDuration(240).start();
+        panel.setAlpha(0f);
+        panel.setTranslationY(Ui.f(28));
+        panel.animate().alpha(1f).translationY(0).setDuration(260).setInterpolator(EASE_OUT).start();
+        blurTo(Ui.px(28), 240);
+    }
+
+    /** The screen behind softens while the bar is up (Android 12 TVs that allow it). */
+    private void blurTo(int radius, long ms) {
+        if (!blur) return;
+        android.view.WindowManager.LayoutParams lp = getWindow().getAttributes();
+        if ((lp.flags & android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND) == 0) {
+            getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        }
+        int from = lp.getBlurBehindRadius();
+        android.animation.ValueAnimator a = android.animation.ValueAnimator.ofInt(from, radius);
+        a.setDuration(ms);
+        a.addUpdateListener(v -> {
+            android.view.WindowManager.LayoutParams p = getWindow().getAttributes();
+            p.setBlurBehindRadius((int) v.getAnimatedValue());
+            getWindow().setAttributes(p);
+        });
+        a.start();
+    }
+
+    /** "Listening…" breathes gently until the first word arrives. */
+    private void waiting(int textRes) {
+        shown = "";
+        line.setEllipsize(TextUtils.TruncateAt.END);
+        line.setText(textRes);
+        line.setTextColor(Ui.INK);
+        if (breathe == null) {
+            breathe = android.animation.ValueAnimator.ofFloat(0.48f, 0.7f);
+            breathe.setDuration(1400);
+            breathe.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+            breathe.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            breathe.addUpdateListener(v -> line.setAlpha((float) v.getAnimatedValue()));
+        }
+        if (!breathe.isStarted()) breathe.start();
+    }
+
+    private void still(float alpha) {
+        if (breathe != null) breathe.cancel();
+        line.setAlpha(alpha);
+    }
+
+    /** Shows what has been heard so far; words that are new fade in rather than pop. */
+    private void transcript(String s) {
+        if (TextUtils.isEmpty(s) || s.equals(shown)) return;
+        still(1f);
+        line.setEllipsize(TextUtils.TruncateAt.START);      // a long sentence keeps its newest words
+        final int keep = s.startsWith(shown) ? shown.length() : 0;
+        shown = s;
+        if (fade != null) fade.cancel();
+        final android.text.SpannableString sp = new android.text.SpannableString(s);
+        fade = android.animation.ValueAnimator.ofInt(0, 255);
+        fade.setDuration(keep == 0 ? 120 : 180);
+        fade.addUpdateListener(v -> {
+            int a = (int) v.getAnimatedValue();
+            for (Object o : sp.getSpans(0, sp.length(), android.text.style.ForegroundColorSpan.class)) sp.removeSpan(o);
+            sp.setSpan(new android.text.style.ForegroundColorSpan((a << 24) | (Ui.INK & 0xFFFFFF)),
+                    keep, sp.length(), android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            line.setText(sp);
+        });
+        fade.start();
+    }
+
+    private void message(int textRes) {
+        if (fade != null) fade.cancel();
+        shown = "";
+        line.setEllipsize(TextUtils.TruncateAt.END);
+        line.setText(textRes);
+        still(0.72f);
     }
 
     // ---- listening -------------------------------------------------------------------------------
 
     private void start() {
-        done = false;
+        phase = LISTENING;
+        startedAt = SystemClock.uptimeMillis();
         handler.removeCallbacksAndMessages(null);
+        wave.setState(VoiceWave.IDLE);
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            show(R.string.voice_need_mic, null);
+            message(R.string.voice_need_mic);
             asking = true;
             requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, ASK_MIC);
             return;
@@ -156,7 +268,8 @@ public class VoiceActivity extends Activity {
         i.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
         i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
         i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        show(R.string.voice_listening, getString(R.string.voice_hint));
+        waiting(R.string.voice_listening);
+        chime.start();
         try {
             recognizer.startListening(i);
         } catch (RuntimeException e) {
@@ -175,18 +288,16 @@ public class VoiceActivity extends Activity {
     private final RecognitionListener listener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle b) {
-            show(R.string.voice_listening, getString(R.string.voice_hint));
         }
 
         @Override
         public void onBeginningOfSpeech() {
+            if (phase == LISTENING) wave.setState(VoiceWave.SPEECH);
         }
 
         @Override
         public void onRmsChanged(float db) {
-            // The droplet swells a little with the voice, so it is clear the TV is hearing something.
-            float s = 1f + Math.max(0f, Math.min(1f, (db + 2f) / 12f)) * 0.22f;
-            mic.animate().scaleX(s).scaleY(s).setDuration(90).start();
+            wave.setLevel(db);
         }
 
         @Override
@@ -195,13 +306,15 @@ public class VoiceActivity extends Activity {
 
         @Override
         public void onEndOfSpeech() {
-            mic.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
-            title.setText(R.string.voice_thinking);
+            if (phase != LISTENING) return;
+            phase = THINKING;
+            wave.setState(VoiceWave.THINK);
+            if (shown.isEmpty()) waiting(R.string.voice_thinking);
         }
 
         @Override
         public void onError(int error) {
-            if (done) return;
+            if (phase == LEAVING || phase == MISSED) return;
             switch (error) {
                 case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
                     fail(R.string.voice_no_permission);
@@ -223,14 +336,17 @@ public class VoiceActivity extends Activity {
         @Override
         public void onResults(Bundle b) {
             ArrayList<String> r = b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            if (r == null || r.isEmpty()) fail(R.string.voice_not_heard);
+            if (r == null || r.isEmpty() || TextUtils.isEmpty(r.get(0))) fail(R.string.voice_not_heard);
             else act(r);
         }
 
         @Override
         public void onPartialResults(Bundle b) {
             ArrayList<String> r = b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            if (r != null && !r.isEmpty() && !TextUtils.isEmpty(r.get(0))) heard.setText(r.get(0));
+            if (r != null && !r.isEmpty()) {
+                if (phase == LISTENING) wave.setState(VoiceWave.SPEECH);
+                transcript(r.get(0));
+            }
         }
 
         @Override
@@ -239,25 +355,30 @@ public class VoiceActivity extends Activity {
     };
 
     private void fail(int msg) {
-        done = true;
-        mic.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
-        show(msg, getString(R.string.voice_retry));
-        handler.postDelayed(this::close, 3500);
+        phase = MISSED;
+        startedAt = SystemClock.uptimeMillis();
+        wave.setState(VoiceWave.REST);
+        message(msg);
+        handler.postDelayed(() -> {
+            if (phase == MISSED) close();
+        }, 4000);
     }
 
     // ---- acting on what was said -----------------------------------------------------------------
 
     private void act(List<String> said) {
-        done = true;
+        phase = THINKING;
         String best = said.get(0);
-        heard.setText(best);
+        transcript(best);
+        wave.setState(VoiceWave.THINK);
         Intent app = matchApp(said);
         if (app != null) {
+            chime.end();
             launch(app);
             return;
         }
-        title.setText(R.string.voice_searching);
-        if (!searchYouTube(best)) fail(R.string.voice_no_youtube);
+        if (searchYouTube(best)) chime.end();
+        else fail(R.string.voice_no_youtube);
     }
 
     /** Words people put before an app's name: "mở YouTube", "open Netflix", "打开 YouTube". */
@@ -348,7 +469,7 @@ public class VoiceActivity extends Activity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try {
             startActivity(i);
-            handler.postDelayed(this::close, 300);
+            handler.postDelayed(this::close, 250);
         } catch (ActivityNotFoundException | SecurityException e) {
             fail(R.string.voice_unavailable);
         }
@@ -359,20 +480,81 @@ public class VoiceActivity extends Activity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         int k = e.getKeyCode();
-        boolean again = k == KeyEvent.KEYCODE_SEARCH || k == KeyEvent.KEYCODE_VOICE_ASSIST
-                || k == KeyEvent.KEYCODE_DPAD_CENTER || k == KeyEvent.KEYCODE_ENTER;
-        if (again) {
-            // The microphone (or OK) after a miss listens again; while listening it does nothing.
-            if (e.getAction() == KeyEvent.ACTION_UP && done) start();
+        if (k == KeyEvent.KEYCODE_SEARCH || k == KeyEvent.KEYCODE_VOICE_ASSIST) {
+            if (e.getAction() == KeyEvent.ACTION_UP) toggle();
+            return true;
+        }
+        if (k == KeyEvent.KEYCODE_DPAD_CENTER || k == KeyEvent.KEYCODE_ENTER) {
+            if (e.getAction() == KeyEvent.ACTION_UP && phase == MISSED) start();
+            return true;
+        }
+        if (k == KeyEvent.KEYCODE_BACK) {
+            if (e.getAction() == KeyEvent.ACTION_UP) {
+                if (recognizer != null) recognizer.cancel();
+                close();
+            }
             return true;
         }
         return super.dispatchKeyEvent(e);
     }
 
+    /** The bar sinks and fades, the screen behind comes back into focus, then the screen goes. */
     private void close() {
-        if (isFinishing()) return;
-        finish();
-        overridePendingTransition(0, android.R.anim.fade_out);
+        if (phase == LEAVING && isFinishing()) return;
+        if (phase == LEAVING) return;
+        phase = LEAVING;
+        handler.removeCallbacksAndMessages(null);
+        scrim.animate().alpha(0f).setDuration(200).start();
+        blurTo(0, 200);
+        panel.animate().alpha(0f).translationY(Ui.f(24)).setDuration(200).setInterpolator(EASE_OUT)
+                .withEndAction(() -> {
+                    finish();
+                    overridePendingTransition(0, 0);
+                }).start();
+    }
+
+    /** Two soft notes up when listening starts, two down when it ends; follows the TV's sound setting. */
+    private static final class Chime {
+        private final android.media.SoundPool pool;
+        private final int up, down;
+        private final boolean on;
+        private boolean upPending, ready;
+
+        Chime(Context c) {
+            on = android.provider.Settings.System.getInt(c.getContentResolver(),
+                    android.provider.Settings.System.SOUND_EFFECTS_ENABLED, 1) != 0;
+            pool = new android.media.SoundPool.Builder().setMaxStreams(2)
+                    .setAudioAttributes(new android.media.AudioAttributes.Builder()
+                            .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION).build())
+                    .build();
+            up = pool.load(c, R.raw.voice_start, 1);
+            down = pool.load(c, R.raw.voice_end, 1);
+            pool.setOnLoadCompleteListener((p, id, status) -> {
+                if (id == up) {
+                    ready = true;
+                    if (upPending) start();
+                }
+            });
+        }
+
+        void start() {
+            if (!on) return;
+            if (!ready) {
+                upPending = true;
+                return;
+            }
+            upPending = false;
+            pool.play(up, 0.5f, 0.5f, 1, 0, 1f);
+        }
+
+        void end() {
+            if (on) pool.play(down, 0.45f, 0.45f, 1, 0, 1f);
+        }
+
+        void release() {
+            pool.release();
+        }
     }
 
     @Override
@@ -391,6 +573,11 @@ public class VoiceActivity extends Activity {
             recognizer.destroy();
             recognizer = null;
         }
+        if (breathe != null) breathe.cancel();
+        if (fade != null) fade.cancel();
+        // Let the closing notes finish before the sound pool goes.
+        final Chime c = chime;
+        new Handler(Looper.getMainLooper()).postDelayed(c::release, 600);
         super.onDestroy();
     }
 }

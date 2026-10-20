@@ -32,12 +32,9 @@
     <string name="date_format" translatable="false">M月d日 EEEE</string>
     <string name="voice_name">语音搜索</string>
     <string name="voice_listening">正在聆听…</string>
-    <string name="voice_hint">说出应用名称，或要在 YouTube 上搜索的内容</string>
     <string name="voice_thinking">请稍候…</string>
-    <string name="voice_searching">正在 YouTube 上搜索…</string>
-    <string name="voice_not_heard">没有听清</string>
-    <string name="voice_retry">按麦克风键或 OK 键重试</string>
-    <string name="voice_need_mic">允许使用麦克风以进行语音搜索</string>
+    <string name="voice_not_heard">没有听清，按麦克风键重试</string>
+    <string name="voice_need_mic">请先允许使用麦克风</string>
     <string name="voice_no_permission">没有麦克风权限</string>
     <string name="voice_no_network">语音搜索需要联网</string>
     <string name="voice_unavailable">这台电视没有语音识别服务</string>
