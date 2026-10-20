@@ -7,4 +7,14 @@
         <item name="android:windowDisablePreview">false</item>
         <item name="android:fontFamily">@font/inter</item>
     </style>
+    <!-- Voice search floats over whatever is on screen. -->
+    <style name="Theme.TvHome.Voice" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.45</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
 </resources>

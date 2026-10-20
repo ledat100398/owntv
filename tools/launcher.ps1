@@ -139,9 +139,18 @@ if ($CheDo -eq 'cai') {
     $ErrorActionPreference = 'Stop'
     if (-not $ok) { Loi 'Gửi tệp lên tivi lỗi. Kiểm tra tivi còn bật rồi chạy lại.'; exit 1 }
     $k = TV @('pm install -r /data/local/tmp/tvhome.apk', 'rm -f /data/local/tmp/tvhome.apk',
-              "pm grant $pkg android.permission.ACCESS_FINE_LOCATION", 'settings get secure screensaver_components')
+              "pm grant $pkg android.permission.ACCESS_FINE_LOCATION", "pm grant $pkg android.permission.RECORD_AUDIO",
+              'settings get secure screensaver_components', 'settings get secure assistant',
+              'settings get secure voice_interaction_service')
     if ($k['pm install -r /data/local/tmp/tvhome.apk'] -notmatch 'Success') { Loi "Cài lỗi: $($k['pm install -r /data/local/tmp/tvhome.apk'].Trim())"; exit 1 }
     Ok 'Đã cài.'
+    # Nút micro trên điều khiển: tivi chưa có trợ lý nào (Google TV sau khi gỡ màn gốc) thì để tìm bằng
+    # giọng nói của OwnTV nhận nút này. Tivi đã có Google Assistant chạy được thì giữ nguyên.
+    $troLy = "$($k['settings get secure assistant'])".Trim(); $vis = "$($k['settings get secure voice_interaction_service'])".Trim()
+    if ((-not $troLy -or $troLy -eq 'null') -and (-not $vis -or $vis -eq 'null')) {
+        TV @("settings put secure assistant $pkg/.VoiceActivity") | Out-Null
+        Ok 'Nút micro: bấm là mở tìm bằng giọng nói của OwnTV.'
+    }
     # Bản thử trước đây mang mã com.gathin.tvhome: chuyển màn hình chính sang bản mới rồi gỡ bản cũ.
     $cuPkg = 'com.gathin.tvhome'
     $q = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME"
@@ -246,6 +255,8 @@ if ($CheDo -eq 'goc') {
         if ($c -and $c -ne 'null') { $lenh += "settings put secure screensaver_components $c" } else { $lenh += 'settings delete secure screensaver_components' }
     }
     $lenh += 'input keyevent KEYCODE_HOME'
+    $kTl = TV @('settings get secure assistant')
+    if ("$($kTl['settings get secure assistant'])" -match [regex]::Escape($pkg)) { $lenh = @('settings delete secure assistant') + $lenh }
     TV $lenh | Out-Null
     Ok "Đã bật lại $goc. Bấm Home để kiểm tra. Launcher mới vẫn còn trong hàng ứng dụng, gỡ trong Cài đặt nếu không dùng."
     exit 0

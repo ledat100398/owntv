@@ -1386,6 +1386,12 @@ public class MainActivity extends Activity implements AppAdapter.Host {
      */
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code == KeyEvent.KEYCODE_SEARCH || code == KeyEvent.KEYCODE_VOICE_ASSIST) {
+            // The remote's microphone: open voice search when the key comes back up.
+            if (e.getAction() == KeyEvent.ACTION_UP && !zoom.isBusy()) openVoice();
+            return true;
+        }
         if (getCurrentFocus() == null && isDpad(e.getKeyCode()) && e.getAction() == KeyEvent.ACTION_DOWN
                 && !panelOpen && !zoom.isBusy() && adapter.getItemCount() > 0) {
             if (inBar) focusPill(barIndex, false);
@@ -1394,6 +1400,21 @@ public class MainActivity extends Activity implements AppAdapter.Host {
             return true;
         }
         return super.dispatchKeyEvent(e);
+    }
+
+    @Override
+    public boolean onSearchRequested(android.view.SearchEvent event) {
+        openVoice();
+        return true;
+    }
+
+    private void openVoice() {
+        if (panelOpen) closePanel();
+        try {
+            startActivity(new Intent(this, VoiceActivity.class));
+            overridePendingTransition(0, 0);
+        } catch (ActivityNotFoundException ignored) {
+        }
     }
 
     /** Back steps back exactly once: close the panel, cancel a move, leave the bar, return to row one. */

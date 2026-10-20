@@ -30,4 +30,16 @@
     <string name="style_clock">Đồng hồ lớn</string>
     <string name="all_settings">Tất cả cài đặt</string>
     <string name="date_format" translatable="false">EEEE, d \'tháng\' M</string>
+    <string name="voice_name">Tìm bằng giọng nói</string>
+    <string name="voice_listening">Đang nghe…</string>
+    <string name="voice_hint">Nói tên app, hoặc nội dung cần tìm trên YouTube</string>
+    <string name="voice_thinking">Chờ một chút…</string>
+    <string name="voice_searching">Đang tìm trên YouTube…</string>
+    <string name="voice_not_heard">Chưa nghe rõ</string>
+    <string name="voice_retry">Bấm micro hoặc OK để nói lại</string>
+    <string name="voice_need_mic">Cho phép dùng micro để tìm bằng giọng nói</string>
+    <string name="voice_no_permission">Chưa có quyền dùng micro</string>
+    <string name="voice_no_network">Tìm bằng giọng nói cần có mạng</string>
+    <string name="voice_unavailable">Tivi này chưa có dịch vụ nhận giọng nói</string>
+    <string name="voice_no_youtube">Tivi chưa cài YouTube</string>
 </resources>

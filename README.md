@@ -68,6 +68,8 @@ does one thing well: get you to the app you want, quickly and quietly.
 - Optional large date and clock on the left (Settings › Home screen).
 - Hold OK on an app to move it, hide it or open its info. Left and right read the grid like a line of
   text; Right on the last app returns to the first.
+- Voice search on the remote's microphone: say an app's name to open it, or anything else to search YouTube.
+  On Google TV this stands in for the stock home's microphone, which goes away with it.
 - A clock screensaver that drifts slowly to protect the panel.
 - Interface in English, Vietnamese and Simplified Chinese, picked from the TV's language.
 

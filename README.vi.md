@@ -68,6 +68,8 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
 - Tùy chọn ngày giờ cỡ lớn bên trái (Cài đặt › Màn hình chính).
 - Giữ OK trên một app để dời, ẩn hoặc xem thông tin. Trái/phải đi như đọc một dòng chữ: hết hàng thì
   sang hàng kế; ở app cuối bấm phải thì về app đầu.
+- Tìm bằng giọng nói qua nút micro trên điều khiển: nói tên app là mở app, nói nội dung khác là tìm trên
+  YouTube. Trên Google TV, tính năng này thay cho micro của màn gốc (mất theo khi gỡ màn gốc).
 - Màn hình chờ đồng hồ trôi chậm để bảo vệ tấm nền.
 - Giao diện tiếng Việt, tiếng Anh và tiếng Trung giản thể, tự chọn theo ngôn ngữ của tivi.
 
