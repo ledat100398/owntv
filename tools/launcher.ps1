@@ -132,7 +132,7 @@ function BatNutHome([bool]$bat) {
     $ds = @("$($k[$q])".Trim() -split ':' | Where-Object { $_ -and $_ -ne 'null' -and $_ -notmatch [regex]::Escape("$pkg/") })
     if ($bat) { $ds += $nutHome }
     if ($ds) {
-        TV @("settings put secure enabled_accessibility_services $($ds -join ':')", 'settings put secure accessibility_enabled 1') | Out-Null
+        TV @("settings put secure enabled_accessibility_services '$($ds -join ':')'", 'settings put secure accessibility_enabled 1') | Out-Null
     } else {
         TV @('settings delete secure enabled_accessibility_services', 'settings put secure accessibility_enabled 0') | Out-Null
     }
@@ -259,14 +259,20 @@ if ($CheDo -eq 'home') {
         $tra = @("cmd package install-existing $phuTro")
         foreach ($g in $goGi) { $tra += "cmd package install-existing $g"; $tra += "pm enable $g" }
         TV $tra | Out-Null
-        BatNutHome $true
-        $k3 = TV @('input keyevent KEYCODE_HOME', 'sleep 3', $xem)
-        if ($k3[$xem] -match [regex]::Escape($pkg)) {
-            Ok 'Xong. Màn gốc vẫn còn trên tivi, nhưng nút Home giờ luôn mở OwnTV.'
-            Write-Host 'Tắt tivi bằng nút nguồn rồi mở lại để chắc chắn. Muốn về như cũ: mở OwnTV.cmd, chọn 2.'
+        # Tắt rồi bật lại để dịch vụ khởi động lại và thấy màn gốc vừa trả về.
+        BatNutHome $false; Start-Sleep -Seconds 2; BatNutHome $true
+        # Phím Home giả lập qua adb không đi qua dịch vụ trợ năng (phím thật trên điều khiển thì có), và Android cũ
+        # hoãn mở app 5 giây sau Home, nên chờ lâu hơn và coi dịch vụ đã chạy là đủ.
+        $k3 = TV @('input keyevent KEYCODE_HOME', 'sleep 7', $xem, 'dumpsys accessibility')
+        $daChay = "$($k3['dumpsys accessibility'])" -match 'HomeKeyService'
+        if ($k3[$xem] -match [regex]::Escape($pkg) -or $daChay) {
+            Ok 'Xong. Màn gốc vẫn còn trên tivi, nhưng nút Home trên điều khiển giờ mở OwnTV.'
+            Write-Host 'Bấm thử nút Home trên điều khiển, rồi tắt tivi bằng nút nguồn và mở lại để chắc chắn.'
+            Write-Host 'Muốn về như cũ: mở OwnTV.cmd, chọn 2.'
             exit 0
         }
         BatNutHome $false
+        Start-Sleep -Seconds 2
         Loi 'Vẫn chưa được. Đang trả lại màn gốc...'
         if ($goc) {
             $q = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME $goc"
@@ -279,8 +285,9 @@ if ($CheDo -eq 'home') {
             $lui += 'input keyevent KEYCODE_HOME'
             TV $lui | Out-Null
         }
-        Write-Host "Đã trả lại. Tivi báo: $($k[$xem].Trim())"
+        Write-Host "Đã trả lại. Tivi báo: $("$($k[$xem])".Trim())"
         Write-Host 'Chụp màn hình cửa sổ này và mở issue trên GitHub.'
+        exit 2
     }
     exit 0
 }
@@ -310,8 +317,9 @@ if ($CheDo -eq 'goc') {
         $c = (Get-Content $cho -Raw).Trim()
         if ($c -and $c -ne 'null') { $lenh += "settings put secure screensaver_components $c" } else { $lenh += 'settings delete secure screensaver_components' }
     }
-    $lenh += 'input keyevent KEYCODE_HOME'
     BatNutHome $false
+    Start-Sleep -Seconds 2
+    $lenh += 'input keyevent KEYCODE_HOME'
     $kTl = TV @('settings get secure assistant')
     if ("$($kTl['settings get secure assistant'])" -match [regex]::Escape($pkg)) { $lenh = @('settings delete secure assistant') + $lenh }
     TV $lenh | Out-Null

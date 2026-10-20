@@ -4,13 +4,12 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Keeps the Home button on OwnTV for TVs whose own home screen cannot be removed (some Google TV sets
@@ -24,26 +23,12 @@ public class HomeKeyService extends AccessibilityService {
 
     private static final String PREFS = "home";
     private static final String STOCK_UNTIL = "stockUntil";
-    private Set<String> stock;
     private long lastJump;
 
     /** Opening the stock home on purpose (Settings › Stock home screen): leave it alone for a minute. */
     static void allowStockHome(Context c) {
         c.getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putLong(STOCK_UNTIL, System.currentTimeMillis() + 60_000).apply();
-    }
-
-    @Override
-    protected void onServiceConnected() {
-        // Every other home screen on this TV (Google's, or the maker's own), not just the ones we know by name.
-        stock = new HashSet<>(Arrays.asList(getResources().getStringArray(R.array.stock_launchers)));
-        Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
-        for (android.content.pm.ResolveInfo ri : getPackageManager().queryIntentActivities(home, 0)) {
-            if (ri.activityInfo == null) continue;
-            String p = ri.activityInfo.packageName;
-            if (p.equals(getPackageName()) || p.contains("settings") || p.contains("setup")) continue;
-            stock.add(p);
-        }
     }
 
     @Override
@@ -56,10 +41,27 @@ public class HomeKeyService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent e) {
         if (e.getEventType() != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || e.getPackageName() == null) return;
-        if (stock == null || !stock.contains(e.getPackageName().toString())) return;
+        String pkg = e.getPackageName().toString(), cls = e.getClassName() == null ? "" : e.getClassName().toString();
+        if (pkg.equals(getPackageName()) || !isOtherHome(pkg, cls)) return;
         long until = getSharedPreferences(PREFS, MODE_PRIVATE).getLong(STOCK_UNTIL, 0);
         if (System.currentTimeMillis() < until) return;
         goHome();
+    }
+
+    /**
+     * Only the home screen itself, not every window of its package: launcher packages often host input
+     * pickers, profile choosers or panels that must keep working. Looked up each time, so a home screen put
+     * back while the service runs is recognised too.
+     */
+    private boolean isOtherHome(String pkg, String cls) {
+        Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+        for (ResolveInfo ri : getPackageManager().queryIntentActivities(home, 0)) {
+            ActivityInfo a = ri.activityInfo;
+            if (a == null || !a.packageName.equals(pkg)) continue;
+            if (a.packageName.contains("settings") || a.packageName.contains("setup")) return false;
+            if (cls.equals(a.name) || cls.equals(a.targetActivity)) return true;
+        }
+        return false;
     }
 
     private void goHome() {

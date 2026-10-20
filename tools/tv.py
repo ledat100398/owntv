@@ -36,9 +36,19 @@ def get_signer():
 
 
 def connect(timeout=120):
+    # Reach the port first, with a short timeout: a TV that is off or asleep should fail in seconds with a
+    # clear message, not after two silent minutes.
+    import socket
+    try:
+        socket.create_connection((HOST, PORT), timeout=8).close()
+    except OSError as e:
+        sys.stderr.write(
+            f"\nKhong ket noi duoc tivi {HOST}:{PORT} ({e}). Tivi dang tat/ngu, sai IP, hoac chua bat Go loi USB?\n"
+            f"Cannot reach the TV at {HOST}:{PORT} ({e}). Is it on, is the IP right, is USB debugging on?\n")
+        sys.exit(4)
     dev = AdbDeviceTcp(HOST, PORT, default_transport_timeout_s=float(timeout))
     try:
-        dev.connect(rsa_keys=[get_signer()], transport_timeout_s=float(timeout), auth_timeout_s=timeout)
+        dev.connect(rsa_keys=[get_signer()], transport_timeout_s=15.0, auth_timeout_s=timeout)
     except Exception as e:  # the TV kept the "Allow USB debugging?" prompt unanswered, or refused
         if "Timeout" not in type(e).__name__ and "timed out" not in str(e):
             raise
