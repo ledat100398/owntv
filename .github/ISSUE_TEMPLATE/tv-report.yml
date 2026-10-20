@@ -1,0 +1,32 @@
+name: My TV / Tivi của tôi
+description: Tell us how OwnTV runs on your TV, working or not. / Báo OwnTV chạy thế nào trên tivi của bạn.
+labels: [tv-report]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: TV or box model / Hãng và model tivi
+      placeholder: Sony XR-65X95J, TCL 55C735, Xiaomi Mi Box S...
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version / Phiên bản Android
+      description: Settings › System › About / Cài đặt › Hệ thống › Giới thiệu
+      placeholder: Google TV 12
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result / Kết quả
+      options:
+        - Works fine / Chạy tốt
+        - Works with problems / Chạy nhưng có lỗi
+        - Does not work / Không chạy được
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened? / Chuyện gì xảy ra?
+      description: A photo of the screen or of the OwnTV.cmd window helps a lot. / Ảnh chụp màn hình tivi hoặc cửa sổ OwnTV.cmd giúp ích rất nhiều.
