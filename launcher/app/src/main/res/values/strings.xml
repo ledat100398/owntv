@@ -39,4 +39,6 @@
     <string name="voice_no_network">Voice search needs the internet</string>
     <string name="voice_unavailable">No speech recognition on this TV</string>
     <string name="voice_no_youtube">YouTube isn\'t installed</string>
+    <string name="home_key_name">OwnTV Home button</string>
+    <string name="home_key_desc">Keeps the remote\'s Home button on OwnTV, even on TVs that bring back their own home screen. It only reacts to the Home key and reads nothing on screen.</string>
 </resources>

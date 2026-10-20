@@ -84,6 +84,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Fallback for TVs whose stock home screen cannot be removed: the Home key goes to OwnTV.
+             The install script turns it on over adb; Settings > Accessibility turns it off. -->
+        <service
+            android:name=".HomeKeyService"
+            android:exported="true"
+            android:label="@string/home_key_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/home_key_service" />
+        </service>
+
         <!-- Screensaver: pick it in Settings, or `settings put secure screensaver_components
              io.github.ledat100398.tvhome/.ClockDream` over adb. -->
         <service

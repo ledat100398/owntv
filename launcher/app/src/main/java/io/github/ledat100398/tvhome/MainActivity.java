@@ -1005,7 +1005,10 @@ public class MainActivity extends Activity implements AppAdapter.Host {
         for (String pkg : getResources().getStringArray(R.array.stock_launchers)) {
             Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).setPackage(pkg);
             if (getPackageManager().resolveActivity(home, 0) != null) {
-                rows.add(Row.ext(getString(R.string.stock_home), () -> open(home)));
+                rows.add(Row.ext(getString(R.string.stock_home), () -> {
+                    HomeKeyService.allowStockHome(this);
+                    open(home);
+                }));
                 break;
             }
         }

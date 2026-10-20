@@ -123,6 +123,21 @@ function ManChinhKhac {
     return $ds
 }
 
+# Dự phòng cho tivi không chịu bỏ màn gốc: dịch vụ trợ năng của OwnTV nhận nút Home và mở OwnTV
+# (giống app đổi chức năng nút). Bật/tắt bằng cài đặt hệ thống, không cần gỡ gì.
+$nutHome = "$pkg/$pkg.HomeKeyService"
+function BatNutHome([bool]$bat) {
+    $q = 'settings get secure enabled_accessibility_services'
+    $k = TV @($q)
+    $ds = @("$($k[$q])".Trim() -split ':' | Where-Object { $_ -and $_ -ne 'null' -and $_ -notmatch [regex]::Escape("$pkg/") })
+    if ($bat) { $ds += $nutHome }
+    if ($ds) {
+        TV @("settings put secure enabled_accessibility_services $($ds -join ':')", 'settings put secure accessibility_enabled 1') | Out-Null
+    } else {
+        TV @('settings delete secure enabled_accessibility_services', 'settings put secure accessibility_enabled 0') | Out-Null
+    }
+}
+
 # =====================================================================
 ChuanBiPython
 $ip = ChonIp; $env:TV_HOST = $ip
@@ -225,20 +240,34 @@ if ($CheDo -eq 'home') {
     $coPhu = $k0["pm list packages $phuTro"] -match [regex]::Escape("package:$phuTro")
     if ($coPhu) { $lenh += "pm uninstall -k --user 0 $phuTro" }
     $lenh += "cmd package set-home-activity --user 0 $act"
-    $lenh += 'input keyevent KEYCODE_HOME'
+    $kGo = TV $lenh
+    BatNutHome $true          # thêm lớp giữ nút Home, phòng khi tivi tự đưa màn gốc trở lại
+    $lenh = @('input keyevent KEYCODE_HOME')
     $lenh += 'sleep 3'
     $xem = 'dumpsys activity activities | grep -i resumedactivity'
     $lenh += $xem
     $k = TV $lenh
     foreach ($g in $goGi) {
-        if ($k["pm uninstall -k --user 0 $g"] -notmatch 'Success') { Loi "Không gỡ được màn gốc $g`: $($k["pm uninstall -k --user 0 $g"].Trim())" }
+        if ($kGo["pm uninstall -k --user 0 $g"] -notmatch 'Success') { Loi "Không gỡ được màn gốc $g`: $("$($kGo["pm uninstall -k --user 0 $g"])".Trim())" }
     }
     Write-Host ''
     if ($k[$xem] -match [regex]::Escape($pkg)) {
         Ok 'Xong. Launcher mới là màn hình chính: mở tivi hay bấm Home đều ra nó.'
         Write-Host 'Tắt tivi bằng nút nguồn rồi mở lại để chắc chắn. Nếu vẫn về màn cũ, chụp cửa sổ này và mở issue trên GitHub.'
     } else {
-        Loi 'Bấm Home chưa ra launcher mới. Đang trả lại màn gốc...'
+        Loi 'Gỡ màn gốc chưa đủ trên tivi này. Thử cách chuyển nút Home sang OwnTV...'
+        $tra = @("cmd package install-existing $phuTro")
+        foreach ($g in $goGi) { $tra += "cmd package install-existing $g"; $tra += "pm enable $g" }
+        TV $tra | Out-Null
+        BatNutHome $true
+        $k3 = TV @('input keyevent KEYCODE_HOME', 'sleep 3', $xem)
+        if ($k3[$xem] -match [regex]::Escape($pkg)) {
+            Ok 'Xong. Màn gốc vẫn còn trên tivi, nhưng nút Home giờ luôn mở OwnTV.'
+            Write-Host 'Tắt tivi bằng nút nguồn rồi mở lại để chắc chắn. Muốn về như cũ: mở OwnTV.cmd, chọn 2.'
+            exit 0
+        }
+        BatNutHome $false
+        Loi 'Vẫn chưa được. Đang trả lại màn gốc...'
         if ($goc) {
             $q = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME $goc"
             $tra = @("cmd package install-existing $phuTro")
@@ -282,6 +311,7 @@ if ($CheDo -eq 'goc') {
         if ($c -and $c -ne 'null') { $lenh += "settings put secure screensaver_components $c" } else { $lenh += 'settings delete secure screensaver_components' }
     }
     $lenh += 'input keyevent KEYCODE_HOME'
+    BatNutHome $false
     $kTl = TV @('settings get secure assistant')
     if ("$($kTl['settings get secure assistant'])" -match [regex]::Escape($pkg)) { $lenh = @('settings delete secure assistant') + $lenh }
     TV $lenh | Out-Null

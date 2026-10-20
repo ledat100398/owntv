@@ -39,4 +39,6 @@
     <string name="voice_no_network">Cần có mạng để nghe giọng nói</string>
     <string name="voice_unavailable">Tivi chưa có dịch vụ nhận giọng nói</string>
     <string name="voice_no_youtube">Tivi chưa cài YouTube</string>
+    <string name="home_key_name">Nút Home của OwnTV</string>
+    <string name="home_key_desc">Giữ nút Home trên điều khiển luôn về OwnTV, kể cả trên tivi tự đưa màn hình gốc trở lại. Chỉ nhận nút Home, không đọc nội dung trên màn hình.</string>
 </resources>

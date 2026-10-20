@@ -39,4 +39,6 @@
     <string name="voice_no_network">语音搜索需要联网</string>
     <string name="voice_unavailable">这台电视没有语音识别服务</string>
     <string name="voice_no_youtube">未安装 YouTube</string>
+    <string name="home_key_name">OwnTV 主页键</string>
+    <string name="home_key_desc">让遥控器的主页键始终回到 OwnTV，即使电视会恢复原主屏幕。只响应主页键，不读取屏幕内容。</string>
 </resources>
