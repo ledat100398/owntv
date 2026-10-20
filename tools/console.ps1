@@ -22,7 +22,7 @@ public struct FontInfo {
     }
     # Tắt "Quick Edit": lỡ bấm chuột vào cửa sổ là Windows dừng script lại (tiêu đề hiện "Select") cho tới khi
     # bấm Enter, trông như bị treo.
-    $vao = [OwnTV.Con]::GetStdHandle(-10); $m = 0
+    $vao = [OwnTV.Con]::GetStdHandle(-10); [uint32]$m = 0
     if ([OwnTV.Con]::GetConsoleMode($vao, [ref]$m)) { [void][OwnTV.Con]::SetConsoleMode($vao, [uint32](([int64]$m -bor 0x80) -band 4294967231)) }
     $tot = @('Consolas', 'Cascadia Mono', 'Cascadia Code', 'Courier New')
     $h = [OwnTV.Con]::GetStdHandle(-11)
