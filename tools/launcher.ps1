@@ -216,7 +216,9 @@ if ($CheDo -eq 'home') {
     $daGhi = if (Test-Path $ghiGoc) { @(Get-Content $ghiGoc | Where-Object { $_.Trim() }) } else { @() }
     if ($goGi) { @($daGhi + $goGi | Select-Object -Unique) | Set-Content $ghiGoc }
     # Sony bật lại app bị "tắt" mỗi lần khởi động lại, nên dùng gỡ cho người dùng 0 (giữ được, trả lại được).
-    $lenh = @("cmd package set-home-activity --user 0 $act")
+    # Android 10 trở lên lưu màn hình chính dưới dạng "vai trò" (role); đặt cả hai cho chắc.
+    $lenh = @("cmd package set-home-activity --user 0 $act", "cmd role add-role-holder --user 0 android.app.role.HOME $pkg 0")
+    if ($goGi) { Write-Host "  Màn hình chính sẽ gỡ tạm: $($goGi -join ', ')" }
     foreach ($g in $goGi) { $lenh += "pm uninstall -k --user 0 $g" }
     $k0 = TV @("pm list packages $phuTro")
     $coPhu = $k0["pm list packages $phuTro"] -match [regex]::Escape("package:$phuTro")

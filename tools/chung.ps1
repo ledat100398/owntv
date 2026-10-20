@@ -54,8 +54,26 @@ function TimPython {
     return $null
 }
 
+function CoAdbShell {
+    if (-not (Test-Path $venvPy)) { return $false }
+    $ErrorActionPreference = 'Continue'
+    & $venvPy -I -c 'import adb_shell' 2>$null | Out-Null
+    $ok = $LASTEXITCODE -eq 0
+    $ErrorActionPreference = 'Stop'
+    return $ok
+}
+
 function ChuanBiPython {
-    if (Test-Path $venvPy) { return }
+    if (CoAdbShell) { return }
+    if (Test-Path $venvPy) {
+        # Lần cài trước bị ngắt giữa chừng: thư mục công cụ có nhưng thiếu thư viện kết nối tivi.
+        Tieude 'Cài lại thư viện kết nối tivi'
+        $ErrorActionPreference = 'Continue'
+        & $venvPy -m pip install -q --disable-pip-version-check -r (Join-Path $repo 'tools\requirements.txt')
+        $ErrorActionPreference = 'Stop'
+        if (CoAdbShell) { Ok 'Đã cài xong.'; return }
+        XoaThuMuc (Join-Path $repo 'tools\venv')
+    }
     Tieude 'Cài công cụ (chỉ lần đầu)'
     $c = TimPython
     if (-not $c) {
@@ -72,7 +90,9 @@ function ChuanBiPython {
     $py = $c.exe; $pyArgs = $c.a
     & $py @pyArgs -m venv (Join-Path $repo 'tools\venv')
     & $venvPy -m pip install -q --disable-pip-version-check -r (Join-Path $repo 'tools\requirements.txt')
-    if ($LASTEXITCODE -ne 0) { Loi 'Cài thư viện lỗi (kiểm tra mạng).'; XoaThuMuc (Join-Path $repo 'tools\venv'); exit 1 }
+    if ($LASTEXITCODE -ne 0 -or -not (CoAdbShell)) {
+        Loi 'Cài thư viện lỗi (kiểm tra mạng rồi chạy lại).'; XoaThuMuc (Join-Path $repo 'tools\venv'); exit 1
+    }
     Ok 'Đã cài xong công cụ.'
 }
 
