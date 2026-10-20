@@ -42,6 +42,12 @@ def connect(timeout=120):
 
 
 def main():
+    # Windows consoles default to cp1252/cp437; TV output (logcat) has characters like → they cannot encode.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     args = sys.argv[1:]
     dev = connect()
     if not args or args == ["--probe"]:
