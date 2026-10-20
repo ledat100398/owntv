@@ -149,6 +149,7 @@ if ($CheDo -eq 'cai') {
         DungApk
     }
     Tieude 'Cài lên tivi'
+    Write-Host 'Nhìn lên tivi: nếu hiện "Cho phép gỡ lỗi USB?", tick "Luôn cho phép" rồi OK (có 2 phút).' -ForegroundColor Yellow
     $ErrorActionPreference = 'Continue'
     & $venvPy -I (Join-Path $repo 'tools\b64push.py') $apk /data/local/tmp/tvhome.apk
     $ok = $LASTEXITCODE -eq 0

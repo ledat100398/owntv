@@ -37,7 +37,17 @@ def get_signer():
 
 def connect(timeout=120):
     dev = AdbDeviceTcp(HOST, PORT, default_transport_timeout_s=float(timeout))
-    dev.connect(rsa_keys=[get_signer()], transport_timeout_s=float(timeout), auth_timeout_s=timeout)
+    try:
+        dev.connect(rsa_keys=[get_signer()], transport_timeout_s=float(timeout), auth_timeout_s=timeout)
+    except Exception as e:  # the TV kept the "Allow USB debugging?" prompt unanswered, or refused
+        if "Timeout" not in type(e).__name__ and "timed out" not in str(e):
+            raise
+        sys.stderr.write(
+            "\nTivi khong tra loi. Nhin len tivi: neu co hop 'Cho phep go loi USB?', tick 'Luon cho phep' roi OK.\n"
+            "Khong thay hop do: vao Tuy chon nha phat trien > Thu hoi quyen go loi USB, tat roi bat lai Go loi USB, chay lai.\n"
+            "The TV did not answer. Accept the 'Allow USB debugging?' prompt on the TV (tick 'Always allow'),\n"
+            "or revoke USB debugging authorisations in Developer options, toggle USB debugging and try again.\n")
+        sys.exit(3)
     return dev
 
 
