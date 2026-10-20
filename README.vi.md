@@ -9,6 +9,10 @@ Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 
 [English](README.md) · Tiếng Việt · [简体中文](README.zh-CN.md)
 
+### [Tải OwnTV.apk](https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk)
+
+Giao diện tiếng Việt, English, 简体中文 · Android TV và Google TV 8.0 trở lên
+
 
 <img src="docs/home.jpg" alt="Màn hình chính OwnTV" width="860">
 
@@ -23,7 +27,7 @@ Không hàng tài trợ, không tự phát video, không app chạy ngầm.
 - [Vì sao có dự án này](#vì-sao-có-dự-án-này)
 - [Tính năng](#tính-năng)
 - [Cần những gì](#cần-những-gì)
-- [Cài trên Windows](#cài-trên-windows)
+- [Cài đặt](#cài-đặt)
 - [Cài thủ công (mọi hệ điều hành)](#cài-thủ-công-mọi-hệ-điều-hành)
 - [Cách dùng](#cách-dùng)
 - [Tắt app chạy ngầm](#tắt-app-chạy-ngầm)
@@ -85,17 +89,23 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
   nên không dùng được.
 - Bật **Tùy chọn cho nhà phát triển** và gỡ lỗi qua mạng (xem bên dưới). Tivi Android 11 trở lên chỉ có
   *Gỡ lỗi không dây* thì mục 1 sẽ hướng dẫn ghép đôi bằng mã.
-- Một máy tính cùng mạng với tivi. Các file bấm-là-chạy dành cho **Windows 10/11**; trên macOS hoặc
+- Một máy tính cùng mạng với tivi, chỉ cần cho Google TV hoặc khi muốn tắt app chạy ngầm. Các file bấm-là-chạy dành cho **Windows 10/11**; trên macOS hoặc
   Linux thì làm theo phần cài thủ công.
 
-## Cài trên Windows
+## Cài đặt
+
+**Không cần máy tính** (Android TV): trên tivi, cài app *Downloader* từ CH Play, gõ
+`https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk`, cài file APK, rồi bấm Home và chọn OwnTV. Google TV thì màn gốc sẽ giành lại nút
+Home, nên làm theo các bước Windows bên dưới một lần.
+
+**Có máy tính Windows** (Google TV cần làm một lần):
 
 1. **Bật tùy chọn nhà phát triển trên tivi.** Cài đặt › Hệ thống › Giới thiệu › bấm OK vào *Bản dựng*
    7 lần. Sau đó Cài đặt › Hệ thống › Tùy chọn cho nhà phát triển › bật *Gỡ lỗi USB* (và *Gỡ lỗi qua
    mạng* nếu tivi có). Xem IP của tivi trong Cài đặt › Mạng.
 2. **Tải kho này về** (nút xanh *Code* › *Download ZIP*) rồi giải nén.
-3. **Mở `OwnTV.cmd`, chọn 1.** Lần đầu sẽ tự tải Java 17 và bộ dựng Android (khoảng 600 MB, 10–20 phút);
-   các lần sau chỉ vài giây. Khi tivi hỏi *Cho phép gỡ lỗi USB?*, tick *Luôn cho phép* rồi đồng ý.
+3. **Mở `OwnTV.cmd`, chọn 1.** Script tải `OwnTV.apk` mới nhất từ trang này (vài MB) rồi cài; chỉ khi không
+   tải được mới tự dựng từ mã nguồn. Khi tivi hỏi *Cho phép gỡ lỗi USB?*, tick *Luôn cho phép* rồi đồng ý.
    Xong là mở tivi hay bấm Home đều ra OwnTV. Script tự bấm Home để kiểm tra, nếu không ra OwnTV thì tự
    trả lại như cũ.
 

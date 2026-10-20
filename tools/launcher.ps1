@@ -129,20 +129,44 @@ $ip = ChonIp; $env:TV_HOST = $ip
 
 if ($CheDo -eq 'cai') {
     Write-Host 'CÀI LAUNCHER MỚI - chạy song song với màn hình gốc, chưa thay nút Home.' -ForegroundColor Yellow
-    ChuanBiJdk
-    ChuanBiSdk
-    DungApk
+    # Bình thường tải bản dựng sẵn trên GitHub (vài MB, vài giây). Chỉ khi không tải được, hoặc đặt
+    # TUDUNG=1 để dựng từ mã nguồn đang có, mới cần Java 17 và bộ dựng Android (khoảng 600 MB).
+    $sanCo = $false
+    if ($env:TUDUNG -ne '1') {
+        Tieude 'Tải OwnTV.apk'
+        $tai = Join-Path $saoLuu 'OwnTV.apk'
+        try {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            $ProgressPreference = 'SilentlyContinue'
+            Invoke-WebRequest 'https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk' -OutFile $tai -UseBasicParsing
+            if ((Get-Item -LiteralPath $tai).Length -gt 500KB) { $apk = $tai; $sanCo = $true; Ok 'Đã tải bản mới nhất.' }
+        } catch { }
+        if (-not $sanCo) { Write-Host 'Không tải được, chuyển sang tự dựng từ mã nguồn.' }
+    }
+    if (-not $sanCo) {
+        ChuanBiJdk
+        ChuanBiSdk
+        DungApk
+    }
     Tieude 'Cài lên tivi'
     $ErrorActionPreference = 'Continue'
     & $venvPy -I (Join-Path $repo 'tools\b64push.py') $apk /data/local/tmp/tvhome.apk
     $ok = $LASTEXITCODE -eq 0
     $ErrorActionPreference = 'Stop'
     if (-not $ok) { Loi 'Gửi tệp lên tivi lỗi. Kiểm tra tivi còn bật rồi chạy lại.'; exit 1 }
-    $k = TV @('pm install -r /data/local/tmp/tvhome.apk', 'rm -f /data/local/tmp/tvhome.apk',
+    $cai = 'pm install -r /data/local/tmp/tvhome.apk'
+    $k = TV @($cai)
+    if ($k[$cai] -match 'UPDATE_INCOMPATIBLE|SIGNATURES') {
+        # Bản cũ do máy tính tự dựng (khóa riêng của từng máy); bản mới dùng một khóa chung cho mọi người.
+        Write-Host 'Bản OwnTV trên tivi được dựng bằng khóa cũ nên không cập nhật đè được.'
+        if (-not (Hoi 'Gỡ bản cũ rồi cài bản mới? (thứ tự app đã xếp sẽ về mặc định)' $true)) { TV @('rm -f /data/local/tmp/tvhome.apk') | Out-Null; exit 1 }
+        $k = TV @("pm uninstall $pkg", $cai)
+    }
+    if ($k[$cai] -notmatch 'Success') { Loi "Cài lỗi: $("$($k[$cai])".Trim())"; TV @('rm -f /data/local/tmp/tvhome.apk') | Out-Null; exit 1 }
+    $k = TV @('rm -f /data/local/tmp/tvhome.apk',
               "pm grant $pkg android.permission.ACCESS_FINE_LOCATION", "pm grant $pkg android.permission.RECORD_AUDIO",
               'settings get secure screensaver_components', 'settings get secure assistant',
               'settings get secure voice_interaction_service')
-    if ($k['pm install -r /data/local/tmp/tvhome.apk'] -notmatch 'Success') { Loi "Cài lỗi: $($k['pm install -r /data/local/tmp/tvhome.apk'].Trim())"; exit 1 }
     Ok 'Đã cài.'
     # Nút micro trên điều khiển: tivi chưa có trợ lý nào (Google TV sau khi gỡ màn gốc) thì để tìm bằng
     # giọng nói của OwnTV nhận nút này. Tivi đã có Google Assistant chạy được thì giữ nguyên.

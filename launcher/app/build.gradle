@@ -10,13 +10,31 @@ android {
         applicationId 'io.github.ledat100398.tvhome'
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName '1.0.0'
+        // The release workflow passes -PversionName=<tag>; the version code follows from it (1.2.3 -> 10203),
+        // so a build made from the same source on your own computer is the same version as the release.
+        def vn = (project.findProperty('versionName') ?: '1.0.0').toString()
+        def p = vn.tokenize('.').collect { it.replaceAll('[^0-9]', '') ?: '0' }.collect { it as int }
+        versionCode p[0] * 10000 + (p.size() > 1 ? p[1] : 0) * 100 + (p.size() > 2 ? p[2] : 0)
+        versionName vn
+    }
+
+    signingConfigs {
+        // One public key for release and local builds; see ../signing/README.md.
+        owntv {
+            storeFile rootProject.file('signing/owntv.jks')
+            storePassword 'owntv-public'
+            keyAlias 'owntv'
+            keyPassword 'owntv-public'
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.owntv
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.owntv
         }
     }
 

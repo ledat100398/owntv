@@ -9,6 +9,10 @@ No sponsored rows, no autoplay, nothing running in the background.
 
 English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 
+### [Download OwnTV.apk](https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk)
+
+Interface in English, Tiếng Việt and 简体中文 · Android TV & Google TV 8.0+
+
 
 <img src="docs/home.jpg" alt="OwnTV home screen" width="860">
 
@@ -23,7 +27,7 @@ English · [Tiếng Việt](README.vi.md) · [简体中文](README.zh-CN.md)
 - [Why](#why)
 - [Features](#features)
 - [Requirements](#requirements)
-- [Install on Windows](#install-on-windows)
+- [Install](#install)
 - [Install by hand (any OS)](#install-by-hand-any-os)
 - [Using it](#using-it)
 - [Switching off background apps](#switching-off-background-apps)
@@ -85,17 +89,23 @@ does one thing well: get you to the app you want, quickly and quietly.
   Samsung (Tizen) and LG (webOS) TVs do not run Android and are not supported.
 - **Developer options** with network debugging switched on (steps below). On Android 11 and newer, if your TV
   only offers *Wireless debugging*, option 1 walks you through pairing it with a code.
-- A computer on the same network. The one-click scripts are for **Windows 10/11**; on macOS or Linux
+- A computer on the same network, needed only for Google TV or to switch off background apps. The scripts are for **Windows 10/11**; on macOS or Linux
   use the manual steps.
 
-## Install on Windows
+## Install
+
+**Without a computer** (Android TV): on the TV, install *Downloader* from the Play Store, enter
+`https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk`, install the APK, then press Home and choose OwnTV. On Google TV the stock
+home takes Home back, so use the Windows steps below once.
+
+**With a Windows PC** (needed once on Google TV):
 
 1. **Turn on developer options on the TV.** Settings › System › About › select *Build* seven times.
    Then Settings › System › Developer options › switch on *USB debugging* (and *Network debugging*
    if your TV lists it). Note the TV's IP address under Settings › Network.
 2. **Download this repository** (green *Code* button › *Download ZIP*) and unzip it.
-3. **Open `OwnTV.cmd` and choose 1.** The first run downloads Java 17 and the Android build tools
-   (about 600 MB, 10–20 minutes); later runs take seconds. When the TV asks *Allow USB debugging?*,
+3. **Open `OwnTV.cmd` and choose 1.** It downloads the latest `OwnTV.apk` from this page (a few MB) and
+   installs it; only if that fails does it build from source. When the TV asks *Allow USB debugging?*,
    tick *Always allow* and confirm. From then on, turning on the TV or pressing Home opens OwnTV.
    The script presses Home itself to check and puts everything back if Home does not land on OwnTV.
 

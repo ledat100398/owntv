@@ -9,6 +9,10 @@
 
 [English](README.md) · [Tiếng Việt](README.vi.md) · 简体中文
 
+### [下载 OwnTV.apk](https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk)
+
+界面支持简体中文、English、Tiếng Việt · Android TV 与 Google TV 8.0 及以上
+
 
 <img src="docs/home.jpg" alt="OwnTV 主屏幕" width="860">
 
@@ -23,7 +27,7 @@
 - [为什么做这个项目](#为什么做这个项目)
 - [功能](#功能)
 - [准备工作](#准备工作)
-- [在 Windows 上安装](#在-windows-上安装)
+- [安装](#安装)
 - [手动安装（任意系统）](#手动安装任意系统)
 - [使用方法](#使用方法)
 - [关闭后台应用](#关闭后台应用)
@@ -82,15 +86,20 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
   NVIDIA Shield、Chromecast with Google TV 等）。三星（Tizen）和 LG（webOS）电视不运行 Android，
   不受支持。
 - 打开**开发者选项**和网络调试（见下文）。Android 11 及以上的电视如果只有*无线调试*，第 1 项会引导你用配对码完成配对。
-- 一台与电视处于同一网络的电脑。一键脚本适用于 **Windows 10/11**；macOS 或 Linux 请按手动步骤操作。
+- 一台与电视处于同一网络的电脑（仅 Google TV 或需要关闭后台应用时才需要）。一键脚本适用于 **Windows 10/11**；macOS 或 Linux 请按手动步骤操作。
 
-## 在 Windows 上安装
+## 安装
+
+**无需电脑**（Android TV）：在电视上从 Play 商店安装 *Downloader*，输入
+`https://github.com/ledat100398/owntv/releases/latest/download/OwnTV.apk`，安装 APK，然后按主页键并选择 OwnTV。Google TV 的原主屏幕会夺回主页键，
+请按下方 Windows 步骤操作一次。
+
+**使用 Windows 电脑**（Google TV 需操作一次）：
 
 1. **在电视上打开开发者选项。** 设置 › 系统 › 关于 › 连续选择*版本号* 7 次。然后在 设置 › 系统 ›
    开发者选项 中打开 *USB 调试*（如有*网络调试*也一并打开）。在 设置 › 网络 中查看电视的 IP 地址。
 2. **下载本仓库**（绿色 *Code* 按钮 › *Download ZIP*）并解压。
-3. **打开 `OwnTV.cmd`，选择 1。** 首次运行会下载 Java 17 和 Android 构建工具（约 600 MB，10–20 分钟），
-   之后只需几秒。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。完成后，开机或按主页键都会进入
+3. **打开 `OwnTV.cmd`，选择 1。** 脚本会从本页下载最新的 `OwnTV.apk`（几 MB）并安装；只有下载失败时才从源码构建。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。完成后，开机或按主页键都会进入
    OwnTV。脚本会自动按主页键检查，如果没有进入 OwnTV，会自动恢复原状。
 
 只需打开 `OwnTV.cmd` 这一个文件，所有操作都在它的菜单里：
