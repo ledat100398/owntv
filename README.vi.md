@@ -138,6 +138,10 @@ adb shell cmd package set-home-activity --user 0 io.github.ledat100398.tvhome/.M
 adb shell input keyevent KEYCODE_HOME
 ```
 
+Tivi và box của hãng khác (TCL, Xiaomi, FPT Play Box…) có thể có thêm màn hình chính riêng, khởi động lại là
+nó giành lại nút Home. Xem mọi màn hình chính bằng `adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME` rồi gỡ các màn thừa theo cách trên.
+Mục 1 của `OwnTV.cmd` tự làm việc này.
+
 Trong thời gian này không thêm được tài khoản Google mới trên tivi; cần thì trả lại trước (xem
 [Trả lại như cũ](#trả-lại-như-cũ)).
 

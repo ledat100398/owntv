@@ -1,8 +1,7 @@
 ﻿# Dùng chung cho tv-sony.ps1 và launcher.ps1: đường dẫn, Python + thư viện ADB, chọn IP, chạy lệnh trên tivi.
 # Nạp bằng: . (Join-Path $PSScriptRoot 'chung.ps1')
 $ErrorActionPreference = 'Stop'
-[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding $false
-$OutputEncoding = New-Object System.Text.UTF8Encoding $false
+. (Join-Path $PSScriptRoot 'console.ps1')
 
 $repo   = Split-Path -Parent $PSScriptRoot
 $venvPy = Join-Path $repo 'tools\venv\Scripts\python.exe'
@@ -88,10 +87,14 @@ function ChonIp {
     while ($true) {
         $ip = if ($cu) { $x = (Read-Host "Địa chỉ IP của tivi [$cu]").Trim(); if ($x) { $x } else { $cu } }
               else { (Read-Host 'Địa chỉ IP của tivi (Cài đặt > Mạng > trạng thái mạng, vd 192.168.1.50)').Trim() }
-        if ($ip -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { Loi 'IP không đúng dạng.'; $cu = ''; continue }
+        # Gõ dễ dãi cũng nhận: dấu phẩy thay dấu chấm (bàn phím số), khoảng trắng, ":5555", "http://".
+        $ip = ($ip -replace '^\w+://', '' -replace '[,，。]', '.' -replace '\s', '' -replace ':\d+$', '' -replace '/.*$', '')
+        $ok = $ip -match '^\d{1,3}(\.\d{1,3}){3}$' -and -not ($ip.Split('.') | Where-Object { [int]$_ -gt 255 })
+        if (-not $ok) { Loi "IP không đúng dạng: '$ip'. Gõ 4 cụm số cách nhau dấu chấm, vd 192.168.1.50"; $cu = ''; continue }
         if (CongMo $ip) { Set-Content $f $ip; return $ip }
         Loi "Không vào được tivi $ip (cổng 5555)."
-        Write-Host '  Kiểm tra: tivi đang bật, cùng mạng Wi-Fi với máy tính, đã bật Gỡ lỗi USB'
+        Write-Host '  Kiểm tra: tivi đang bật, cùng mạng với máy tính (không dùng Wi-Fi khách), đã bật Gỡ lỗi USB'
+        Write-Host '  và cả Gỡ lỗi qua mạng nếu tivi có mục đó. Đúng IP thì tivi sẽ hỏi "Cho phép gỡ lỗi USB?".'
         Write-Host '  (Cài đặt > Tùy chọn thiết bị > Giới thiệu > bấm Bản dựng 7 lần > Tùy chọn nhà phát triển).'
         $cu = $ip
         if (-not (Hoi 'Thử lại?' $true)) { exit 1 }

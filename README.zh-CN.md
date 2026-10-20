@@ -134,6 +134,9 @@ adb shell cmd package set-home-activity --user 0 io.github.ledat100398.tvhome/.M
 adb shell input keyevent KEYCODE_HOME
 ```
 
+其他品牌的电视和盒子（TCL、小米、FPT Play Box 等）可能还自带主屏幕，重启后会夺回主页键。用
+`adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME` 列出所有主屏幕，再按同样方法移除多余的。`OwnTV.cmd` 的第 1 项会自动完成这一步。
+
 移除期间无法在电视上添加新的 Google 账号；如有需要，请先恢复（见[恢复原状](#恢复原状)）。
 
 时钟屏保（可选）：

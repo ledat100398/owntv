@@ -104,6 +104,24 @@ function GocCoCai {
     return $null
 }
 
+# Mọi màn hình chính khác trên máy (của Google, của hãng tivi hay box). Tivi nào có màn của hãng ưu tiên cao
+# thì khởi động lại là nó giành lại nút Home, nên phải gỡ hết cho người dùng 0, không chỉ màn của Google.
+function ManChinhKhac {
+    $q = 'cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME'
+    $k = TV @($q)
+    $ds = @()
+    foreach ($d in ($k[$q] -split "`n")) {
+        $d = $d.Trim()
+        if ($d -notmatch '^([\w.]+)/') { continue }
+        $g = $Matches[1]
+        # Bỏ qua launcher này, màn dự phòng của Cài đặt và trình thiết lập ban đầu (xử lý riêng ở dưới).
+        if ($g -eq $pkg -or $g -eq $phuTro -or $g -match 'settings|provision|setupwizard') { continue }
+        if ($ds -notcontains $g) { $ds += $g }
+    }
+    foreach ($s in $stocks) { if ($ds -notcontains $s -and (GocCoCai) -eq $s) { $ds += $s } }
+    return $ds
+}
+
 # =====================================================================
 ChuanBiPython
 $ip = ChonIp; $env:TV_HOST = $ip
@@ -153,10 +171,19 @@ if ($CheDo -eq 'home') {
     $k = TV @("pm list packages $pkg")
     if ($k["pm list packages $pkg"] -notmatch [regex]::Escape("package:$pkg")) { Loi 'Chưa cài OwnTV. Mở OwnTV.cmd, chọn 1.'; exit 1 }
     if (-not ($env:HOME_DONGY -eq '1' -or (Hoi 'Làm luôn?' $false))) { exit 0 }
-    $goc = GocCoCai
+    $khac = @(ManChinhKhac)
+    $goGi = @()
+    foreach ($g in $khac) {
+        $quen = $stocks -contains $g
+        if ($quen -or (Hoi "  Gỡ màn hình chính có sẵn $g (cho người dùng 0, trả lại được)?" $true)) { $goGi += $g }
+    }
+    $goc = $goGi | Select-Object -First 1
+    # Ghi lại cả các màn đã gỡ từ lần trước, để mục 2 trả lại đủ.
+    $daGhi = if (Test-Path $ghiGoc) { @(Get-Content $ghiGoc | Where-Object { $_.Trim() }) } else { @() }
+    if ($goGi) { @($daGhi + $goGi | Select-Object -Unique) | Set-Content $ghiGoc }
     # Sony bật lại app bị "tắt" mỗi lần khởi động lại, nên dùng gỡ cho người dùng 0 (giữ được, trả lại được).
     $lenh = @("cmd package set-home-activity --user 0 $act")
-    if ($goc) { Set-Content $ghiGoc $goc; $lenh += "pm uninstall -k --user 0 $goc" }
+    foreach ($g in $goGi) { $lenh += "pm uninstall -k --user 0 $g" }
     $k0 = TV @("pm list packages $phuTro")
     $coPhu = $k0["pm list packages $phuTro"] -match [regex]::Escape("package:$phuTro")
     if ($coPhu) { $lenh += "pm uninstall -k --user 0 $phuTro" }
@@ -166,15 +193,20 @@ if ($CheDo -eq 'home') {
     $xem = 'dumpsys activity activities | grep -i resumedactivity'
     $lenh += $xem
     $k = TV $lenh
-    if ($goc -and $k["pm uninstall -k --user 0 $goc"] -notmatch 'Success') { Loi "Không gỡ được màn gốc: $($k["pm uninstall -k --user 0 $goc"].Trim())"; exit 1 }
+    foreach ($g in $goGi) {
+        if ($k["pm uninstall -k --user 0 $g"] -notmatch 'Success') { Loi "Không gỡ được màn gốc $g`: $($k["pm uninstall -k --user 0 $g"].Trim())" }
+    }
     Write-Host ''
     if ($k[$xem] -match [regex]::Escape($pkg)) {
         Ok 'Xong. Launcher mới là màn hình chính: mở tivi hay bấm Home đều ra nó.'
+        Write-Host 'Tắt tivi bằng nút nguồn rồi mở lại để chắc chắn. Nếu vẫn về màn cũ, chụp cửa sổ này và mở issue trên GitHub.'
     } else {
         Loi 'Bấm Home chưa ra launcher mới. Đang trả lại màn gốc...'
         if ($goc) {
             $q = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME $goc"
-            $k2 = TV @("cmd package install-existing $phuTro", "cmd package install-existing $goc", "pm enable $goc", $q)
+            $tra = @("cmd package install-existing $phuTro")
+            foreach ($g in $goGi) { $tra += "cmd package install-existing $g"; $tra += "pm enable $g" }
+            $k2 = TV ($tra + $q)
             $comp = ($k2[$q] -split "`n" | Where-Object { $_ -match '/' } | Select-Object -Last 1)
             $lui = @()
             if ($comp) { $lui += "cmd package set-home-activity --user 0 $($comp.Trim())" }
@@ -189,7 +221,12 @@ if ($CheDo -eq 'home') {
 
 if ($CheDo -eq 'goc') {
     Write-Host 'TRẢ LẠI MÀN HÌNH CHÍNH GỐC CỦA TIVI.' -ForegroundColor Yellow
-    $goc = if (Test-Path $ghiGoc) { (Get-Content $ghiGoc -Raw).Trim() } else { GocCoCai }
+    $daGo = if (Test-Path $ghiGoc) { @(Get-Content $ghiGoc | ForEach-Object { $_.Trim() } | Where-Object { $_ }) } else { @() }
+    if ($daGo) {
+        $tra = @(); foreach ($g in $daGo) { $tra += "cmd package install-existing $g"; $tra += "pm enable $g" }
+        TV $tra | Out-Null
+    }
+    $goc = if ($daGo) { $daGo[0] } else { GocCoCai }
     if (-not $goc) {
         # Chạy từ máy khác (không có sao lưu) và màn gốc đã bị gỡ khỏi người dùng: thử cài lại từng màn gốc đã biết.
         foreach ($s in $stocks) {

@@ -139,6 +139,10 @@ adb shell cmd package set-home-activity --user 0 io.github.ledat100398.tvhome/.M
 adb shell input keyevent KEYCODE_HOME
 ```
 
+Other TVs and boxes (TCL, Xiaomi, FPT Play Box and so on) may also ship their own home screen, which takes Home
+back after a restart. List every home screen with `adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME` and remove the extra ones the same way.
+Option 1 of `OwnTV.cmd` does this for you.
+
 While they are removed you cannot add a new Google account on the TV; restore them first if you need to
 (see [Undo everything](#undo-everything)).
 
