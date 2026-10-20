@@ -215,7 +215,7 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
 | Sony BRAVIA XR-65X95J | Google TV，Android 12 | 日常使用 |
 
 OwnTV 只使用公开的 Android TV API，应可在任何 Android TV 8.0 及以上设备上运行。如果你在其他型号上
-试用，欢迎提交 issue 说明型号和效果，帮助完善此表。
+试用，欢迎[报告你的电视](https://github.com/ledat100398/owntv/issues/new?template=tv-report.yml)，说明型号和效果，帮助完善此表。
 
 ## 隐私
 

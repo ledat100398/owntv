@@ -225,7 +225,7 @@ Dùng ổn rồi thì tắt Gỡ lỗi USB trên tivi cho an toàn.
 | Sony BRAVIA XR-65X95J | Google TV, Android 12 | Dùng hằng ngày |
 
 OwnTV chỉ dùng API công khai của Android TV nên chạy được trên mọi thiết bị Android TV 8.0 trở lên.
-Nếu bạn thử trên mẫu khác, hãy mở issue ghi tên mẫu và kết quả để bảng này đầy dần.
+Nếu bạn thử trên mẫu khác, hãy [báo tivi của bạn](https://github.com/ledat100398/owntv/issues/new?template=tv-report.yml) kèm tên mẫu và kết quả để bảng này đầy dần.
 
 ## Quyền riêng tư
 

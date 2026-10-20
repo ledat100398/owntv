@@ -227,7 +227,7 @@ When you are done, switch USB debugging off again.
 | Sony BRAVIA XR-65X95J | Google TV, Android 12 | Daily use |
 
 OwnTV uses only public Android TV APIs and should work on any Android TV 8.0+ device. If you try
-it on another model, please open an issue with the model and what you saw, so this table can grow.
+it on another model, please [report your TV](https://github.com/ledat100398/owntv/issues/new?template=tv-report.yml) with the model and what you saw, so this table can grow.
 
 ## Privacy
 
