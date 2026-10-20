@@ -1,13 +1,13 @@
 # Danh sách gói có thể TẮT trên tivi Sony BRAVIA (Android TV / Google TV), gộp từ 2 danh sách Sony
 # đã thử (X900E Android 9, UR2 Android 10) và bỏ các app chỉ có ở Mỹ.
 # Cột: gói <TAB> nhóm <TAB> mô tả. Gói không có trên tivi sẽ được bỏ qua.
-# Các gói được gỡ khỏi người dùng (pm uninstall -k --user 0), bản gốc vẫn nằm trong tivi; 2-KHOI-PHUC.cmd trả lại đúng những gói đã gỡ.
+# Các gói được gỡ khỏi người dùng (pm uninstall -k --user 0), bản gốc vẫn nằm trong tivi; OwnTV.cmd (mục 4) trả lại đúng những gói đã gỡ.
 #
 # KHÔNG BAO GIỜ thêm vào đây: com.sony.dtv.tvx (xem HDMI/ăng-ten), com.sony.dtv.tvinput.*,
 # com.sony.dtv.braviasync* (HDMI-CEC), remotepairing / rcpowerkey / uinputservice (điều khiển),
 # imeproxy (bàn phím), sonysystemservice, settingsprovider, com.mediatek.*, com.android.vending
 # (CH Play), com.google.android.gms, Bluetooth, timers (hẹn giờ tắt), smartmediaapp (xem USB),
-# com.google.android.apps.tv.launcherx (màn hình chính gốc của Google TV: chỉ tắt bằng 4-DAT-LAM-MAN-CHINH.cmd).
+# com.google.android.apps.tv.launcherx (màn hình chính gốc của Google TV: chỉ tắt bằng OwnTV.cmd, mục 1).
 #
 # Nhóm 1-4 mặc định TẮT, nhóm 5-6 mặc định GIỮ. Script vẫn hỏi từng nhóm.
 

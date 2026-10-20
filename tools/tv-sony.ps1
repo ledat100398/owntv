@@ -1,10 +1,10 @@
 ﻿# Tối ưu tivi Sony qua Wi-Fi: tắt app chạy ngầm, quảng cáo, theo dõi.
 # Gỡ app khỏi người dùng (pm uninstall -k --user 0): bản cài gốc vẫn nằm trong tivi, khôi phục bằng install-existing.
 # Không dùng pm disable-user vì tivi Sony tự bật lại app bị tắt mỗi lần khởi động lại.
-# Chạy qua 1-TOI-UU-TV.cmd (tối ưu) hoặc 2-KHOI-PHUC.cmd (bật lại mọi thứ đã tắt).
+# Chạy qua OwnTV.cmd: menu 3 (tối ưu) hoặc 4 (bật lại mọi thứ đã tắt).
 param([ValidateSet('toiuu', 'khoiphuc')][string]$CheDo = 'toiuu')
 
-. (Join-Path $PSScriptRoot 'tools\chung.ps1')
+. (Join-Path $PSScriptRoot 'chung.ps1')
 $dsGoi  = Join-Path $repo 'examples\sony-bravia-vn\goi-tat.tsv'
 # =====================================================================
 if ($CheDo -eq 'khoiphuc') {
@@ -34,7 +34,7 @@ if ($CheDo -eq 'khoiphuc') {
 }
 
 # =====================================================================
-Write-Host 'TỐI ƯU TIVI SONY - app được gỡ khỏi người dùng, bản gốc vẫn trong tivi; chạy 2-KHOI-PHUC.cmd là trả lại hết.' -ForegroundColor Yellow
+Write-Host 'TỐI ƯU TIVI SONY - app được gỡ khỏi người dùng, bản gốc vẫn trong tivi; chọn 4 trong OwnTV.cmd là trả lại hết.' -ForegroundColor Yellow
 ChuanBiPython
 $ip = ChonIp; $env:TV_HOST = $ip
 
@@ -142,4 +142,4 @@ if (Hoi 'Khởi động lại tivi và đo lại RAM?' $true) {
     } else { Loi 'Chờ quá lâu chưa thấy tivi. Mở tivi lên rồi chạy lại để kiểm tra.' }
 }
 Write-Host ''
-Write-Host 'Xong. Có gì trục trặc: chạy 2-KHOI-PHUC.cmd. Dùng ổn vài ngày thì tắt "Gỡ lỗi USB" trên tivi cho an toàn.' -ForegroundColor Yellow
+Write-Host 'Xong. Có gì trục trặc: mở OwnTV.cmd, chọn 4. Dùng ổn vài ngày thì tắt "Gỡ lỗi USB" trên tivi cho an toàn.' -ForegroundColor Yellow

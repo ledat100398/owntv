@@ -74,7 +74,7 @@ does one thing well: get you to the app you want, quickly and quietly.
 **Performance**
 - No live blur: the glass uses one tiny pre-blurred copy of the wallpaper.
 - Tile shadows are baked once and reused; animations touch only transform and alpha.
-- A measuring script reports cold and warm start time, dropped frames and memory against targets.
+- A built-in measurement (option 5) reports cold and warm start time, dropped frames and memory against targets.
 
 ## Requirements
 
@@ -91,24 +91,23 @@ does one thing well: get you to the app you want, quickly and quietly.
    Then Settings › System › Developer options › switch on *USB debugging* (and *Network debugging*
    if your TV lists it). Note the TV's IP address under Settings › Network.
 2. **Download this repository** (green *Code* button › *Download ZIP*) and unzip it.
-3. **Run `3-CAI-LAUNCHER.cmd`.** The first run downloads Java 17 and the Android build tools
+3. **Open `OwnTV.cmd` and choose 1.** The first run downloads Java 17 and the Android build tools
    (about 600 MB, 10–20 minutes); later runs take seconds. When the TV asks *Allow USB debugging?*,
-   tick *Always allow* and confirm. OwnTV then appears in your app row; the Home button still
-   opens the original home screen while you try it.
-4. **Make it your home screen:** run `4-DAT-LAM-MAN-CHINH.cmd`. The script presses Home itself to check
-   and puts everything back if Home does not land on OwnTV.
+   tick *Always allow* and confirm. From then on, turning on the TV or pressing Home opens OwnTV.
+   The script presses Home itself to check and puts everything back if Home does not land on OwnTV.
 
-> The helper scripts are written in Vietnamese. Each one asks before changing anything, keeps a
-> backup and has a matching undo script. If you prefer English, the manual steps below do the same.
+`OwnTV.cmd` is the only file you need to open; everything is in its menu:
 
-| Script | What it does |
+| Option | What it does |
 |---|---|
-| `1-TOI-UU-TV.cmd` | Switches off background, advertising and tracking apps (Sony list), group by group |
-| `2-KHOI-PHUC.cmd` | Restores everything step 1 changed |
-| `3-CAI-LAUNCHER.cmd` | Builds and installs OwnTV, sets the clock screensaver |
-| `4-DAT-LAM-MAN-CHINH.cmd` | Makes OwnTV the home screen |
-| `5-TRA-LAI-MAN-GOC.cmd` | Brings back the original home screen |
-| `6-DO-HIEU-NANG.cmd` | Measures start time, dropped frames and memory |
+| 1 | Installs OwnTV and makes it the home screen |
+| 2 | Brings back the original home screen |
+| 3 | Switches off background, advertising and tracking apps (Sony list), group by group. Optional |
+| 4 | Restores everything option 3 switched off |
+| 5 | Measures start time, dropped frames and memory |
+
+> The prompts are in Vietnamese, with English hints in the menu. Every option asks before changing
+> anything, keeps a backup and can be undone. If you prefer English, the manual steps below do the same.
 
 ## Install by hand (any OS)
 
@@ -165,7 +164,7 @@ Hidden apps come back from Settings › Show hidden apps.
 
 ## Switching off background apps
 
-`1-TOI-UU-TV.cmd` works through [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv)
+Option 3 of `OwnTV.cmd` works through [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv)
 in groups (ads and tracking, store demo mode, error reporting, rarely used apps, voice, casting) and asks
 about each group. Apps are removed **for the current user only** with `pm uninstall -k --user 0`: the
 original stays on the TV and comes back with `cmd package install-existing`. Sony TVs re-enable apps that
@@ -191,7 +190,7 @@ Missing packages are skipped, so the defaults are safe on any TV. To change the 
 
 ## Undo everything
 
-- Original home screen: run `5-TRA-LAI-MAN-GOC.cmd`, or
+- Original home screen: open `OwnTV.cmd` and choose 2, or
 
   ```sh
   adb shell cmd package install-existing com.google.android.tungsten.setupwraith
@@ -199,7 +198,7 @@ Missing packages are skipped, so the defaults are safe on any TV. To change the 
   adb shell input keyevent KEYCODE_HOME
   ```
 
-- Background apps: run `2-KHOI-PHUC.cmd`, or `adb shell cmd package install-existing <package>`.
+- Background apps: choose 4 in `OwnTV.cmd`, or `adb shell cmd package install-existing <package>`.
 - OwnTV itself: Settings › Apps › OwnTV › Uninstall.
 
 When you are done, switch USB debugging off again.

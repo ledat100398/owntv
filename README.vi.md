@@ -74,7 +74,7 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
 **Hiệu năng**
 - Không làm mờ trực tiếp: lớp kính dùng một bản ảnh nền nhỏ đã làm mờ sẵn.
 - Bóng của ô app vẽ một lần rồi dùng lại; chuyển động chỉ đổi vị trí và độ trong.
-- Có script đo thời gian mở, số khung hình bị giật và bộ nhớ, so với ngưỡng mục tiêu.
+- Có sẵn phép đo (mục 5) thời gian mở, số khung hình bị giật và bộ nhớ, so với ngưỡng mục tiêu.
 
 ## Cần những gì
 
@@ -91,22 +91,22 @@ chỉ làm tốt một việc: đưa bạn tới đúng app cần mở, nhanh v�
    7 lần. Sau đó Cài đặt › Hệ thống › Tùy chọn cho nhà phát triển › bật *Gỡ lỗi USB* (và *Gỡ lỗi qua
    mạng* nếu tivi có). Xem IP của tivi trong Cài đặt › Mạng.
 2. **Tải kho này về** (nút xanh *Code* › *Download ZIP*) rồi giải nén.
-3. **Chạy `3-CAI-LAUNCHER.cmd`.** Lần đầu sẽ tự tải Java 17 và bộ dựng Android (khoảng 600 MB, 10–20 phút);
+3. **Mở `OwnTV.cmd`, chọn 1.** Lần đầu sẽ tự tải Java 17 và bộ dựng Android (khoảng 600 MB, 10–20 phút);
    các lần sau chỉ vài giây. Khi tivi hỏi *Cho phép gỡ lỗi USB?*, tick *Luôn cho phép* rồi đồng ý.
-   OwnTV sẽ nằm trong hàng ứng dụng; nút Home vẫn về màn gốc để bạn dùng thử trước.
-4. **Đặt làm màn hình chính:** chạy `4-DAT-LAM-MAN-CHINH.cmd`. Script tự bấm Home để kiểm tra, nếu không
-   ra OwnTV thì tự trả lại như cũ.
+   Xong là mở tivi hay bấm Home đều ra OwnTV. Script tự bấm Home để kiểm tra, nếu không ra OwnTV thì tự
+   trả lại như cũ.
 
-| Script | Việc làm |
+Chỉ có một file cần mở là `OwnTV.cmd`, mọi việc nằm trong menu của nó:
+
+| Mục | Việc làm |
 |---|---|
-| `1-TOI-UU-TV.cmd` | Tắt app chạy ngầm, quảng cáo, theo dõi (danh sách cho Sony), hỏi từng nhóm |
-| `2-KHOI-PHUC.cmd` | Trả lại mọi thứ bước 1 đã đổi |
-| `3-CAI-LAUNCHER.cmd` | Dựng và cài OwnTV, đặt màn hình chờ đồng hồ |
-| `4-DAT-LAM-MAN-CHINH.cmd` | Đặt OwnTV làm màn hình chính |
-| `5-TRA-LAI-MAN-GOC.cmd` | Trả lại màn hình chính gốc |
-| `6-DO-HIEU-NANG.cmd` | Đo thời gian mở, khung hình giật, bộ nhớ |
+| 1 | Cài OwnTV và đặt làm màn hình chính |
+| 2 | Trả lại màn hình chính gốc |
+| 3 | Tắt app chạy ngầm, quảng cáo, theo dõi (danh sách cho Sony), hỏi từng nhóm. Không bắt buộc |
+| 4 | Bật lại mọi app mục 3 đã tắt |
+| 5 | Đo thời gian mở, khung hình giật, bộ nhớ |
 
-Script nào cũng hỏi trước khi đổi, có sao lưu và có script trả lại tương ứng.
+Mục nào cũng hỏi trước khi đổi, có sao lưu và trả lại được.
 
 ## Cài thủ công (mọi hệ điều hành)
 
@@ -163,7 +163,7 @@ App đã ẩn hiện lại trong Cài đặt › Hiện lại app đã ẩn.
 
 ## Tắt app chạy ngầm
 
-`1-TOI-UU-TV.cmd` dùng danh sách [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv),
+Mục 3 của `OwnTV.cmd` dùng danh sách [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv),
 chia nhóm (quảng cáo và theo dõi, chế độ trưng bày, gửi báo lỗi, app ít dùng, giọng nói, chiếu màn hình)
 và hỏi từng nhóm. App được gỡ **chỉ khỏi người dùng hiện tại** bằng `pm uninstall -k --user 0`: bản gốc
 vẫn nằm trong tivi, trả lại bằng `cmd package install-existing`. Không dùng cách *tắt* app vì tivi Sony
@@ -188,7 +188,7 @@ thay `launcher/app/src/main/res/drawable-nodpi/wallpaper.jpg` (2008 × 1130) r�
 
 ## Trả lại như cũ
 
-- Màn hình chính gốc: chạy `5-TRA-LAI-MAN-GOC.cmd`, hoặc
+- Màn hình chính gốc: mở `OwnTV.cmd`, chọn 2, hoặc
 
   ```sh
   adb shell cmd package install-existing com.google.android.tungsten.setupwraith
@@ -196,7 +196,7 @@ thay `launcher/app/src/main/res/drawable-nodpi/wallpaper.jpg` (2008 × 1130) r�
   adb shell input keyevent KEYCODE_HOME
   ```
 
-- App chạy ngầm: chạy `2-KHOI-PHUC.cmd`, hoặc `adb shell cmd package install-existing <gói>`.
+- App chạy ngầm: mở `OwnTV.cmd`, chọn 4, hoặc `adb shell cmd package install-existing <gói>`.
 - Gỡ OwnTV: Cài đặt › Ứng dụng › OwnTV › Gỡ cài đặt.
 
 Dùng ổn rồi thì tắt Gỡ lỗi USB trên tivi cho an toàn.

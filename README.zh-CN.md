@@ -72,7 +72,7 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
 **性能**
 - 不做实时模糊：玻璃效果使用一张预先模糊的小尺寸壁纸。
 - 图块阴影只绘制一次并重复使用；动画只改变位移和透明度。
-- 附带测量脚本，可对照目标值报告冷启动/热启动时间、掉帧和内存占用。
+- 内置测量（第 5 项），可对照目标值报告冷启动/热启动时间、掉帧和内存占用。
 
 ## 准备工作
 
@@ -87,23 +87,22 @@ Google TV 自带的主屏幕更像一个橱窗：赞助内容、自动播放的�
 1. **在电视上打开开发者选项。** 设置 › 系统 › 关于 › 连续选择*版本号* 7 次。然后在 设置 › 系统 ›
    开发者选项 中打开 *USB 调试*（如有*网络调试*也一并打开）。在 设置 › 网络 中查看电视的 IP 地址。
 2. **下载本仓库**（绿色 *Code* 按钮 › *Download ZIP*）并解压。
-3. **运行 `3-CAI-LAUNCHER.cmd`。** 首次运行会下载 Java 17 和 Android 构建工具（约 600 MB，10–20 分钟），
-   之后只需几秒。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。OwnTV 会出现在应用列表中；
-   试用期间主页键仍打开原主屏幕。
-4. **设为主屏幕：** 运行 `4-DAT-LAM-MAN-CHINH.cmd`。脚本会自动按主页键检查，如果没有进入 OwnTV，
-   会自动恢复原状。
+3. **打开 `OwnTV.cmd`，选择 1。** 首次运行会下载 Java 17 和 Android 构建工具（约 600 MB，10–20 分钟），
+   之后只需几秒。电视提示*允许 USB 调试吗？*时，勾选*始终允许*并确认。完成后，开机或按主页键都会进入
+   OwnTV。脚本会自动按主页键检查，如果没有进入 OwnTV，会自动恢复原状。
 
-> 辅助脚本的提示文字为越南语。每个脚本在更改前都会询问、保留备份，并有对应的恢复脚本。
-> 如不熟悉越南语，可按下方手动步骤完成同样的操作。
+只需打开 `OwnTV.cmd` 这一个文件，所有操作都在它的菜单里：
 
-| 脚本 | 作用 |
+| 选项 | 作用 |
 |---|---|
-| `1-TOI-UU-TV.cmd` | 按组关闭后台、广告和跟踪类应用（索尼列表） |
-| `2-KHOI-PHUC.cmd` | 恢复第 1 步所做的全部更改 |
-| `3-CAI-LAUNCHER.cmd` | 构建并安装 OwnTV，设置时钟屏保 |
-| `4-DAT-LAM-MAN-CHINH.cmd` | 将 OwnTV 设为主屏幕 |
-| `5-TRA-LAI-MAN-GOC.cmd` | 恢复原主屏幕 |
-| `6-DO-HIEU-NANG.cmd` | 测量启动时间、掉帧和内存 |
+| 1 | 安装 OwnTV 并设为主屏幕 |
+| 2 | 恢复原主屏幕 |
+| 3 | 按组关闭后台、广告和跟踪类应用（索尼列表），可选 |
+| 4 | 恢复第 3 项关闭的全部应用 |
+| 5 | 测量启动时间、掉帧和内存 |
+
+> 提示文字为越南语，菜单附有英文说明。每一项在更改前都会询问、保留备份，并且可以恢复。
+> 如不熟悉越南语，可按下方手动步骤完成同样的操作。
 
 ## 手动安装（任意系统）
 
@@ -159,7 +158,7 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
 
 ## 关闭后台应用
 
-`1-TOI-UU-TV.cmd` 使用 [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv)，
+`OwnTV.cmd` 的第 3 项使用 [`examples/sony-bravia-vn/goi-tat.tsv`](examples/sony-bravia-vn/goi-tat.tsv)，
 按组（广告与跟踪、门店演示模式、错误报告、少用应用、语音、投屏）逐组询问。应用通过
 `pm uninstall -k --user 0` **仅对当前用户**移除：原版仍保留在电视中，可用 `cmd package install-existing`
 恢复。之所以不用"停用"，是因为索尼电视每次重启都会重新启用被停用的应用。
@@ -182,7 +181,7 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
 
 ## 恢复原状
 
-- 原主屏幕：运行 `5-TRA-LAI-MAN-GOC.cmd`，或
+- 原主屏幕：打开 `OwnTV.cmd` 选择 2，或
 
   ```sh
   adb shell cmd package install-existing com.google.android.tungsten.setupwraith
@@ -190,7 +189,7 @@ adb shell settings put secure screensaver_components io.github.ledat100398.tvhom
   adb shell input keyevent KEYCODE_HOME
   ```
 
-- 后台应用：运行 `2-KHOI-PHUC.cmd`，或 `adb shell cmd package install-existing <包名>`。
+- 后台应用：在 `OwnTV.cmd` 中选择 4，或 `adb shell cmd package install-existing <包名>`。
 - 卸载 OwnTV：设置 › 应用 › OwnTV › 卸载。
 
 使用稳定后，请关闭电视上的 USB 调试。

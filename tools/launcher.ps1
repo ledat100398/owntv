@@ -1,8 +1,8 @@
 ﻿# Launcher mới cho tivi Sony (Google TV): dựng, cài, đặt làm màn hình chính, trả lại màn gốc, đo hiệu năng.
-# Chạy qua 3-CAI-LAUNCHER.cmd, 4-DAT-LAM-MAN-CHINH.cmd, 5-TRA-LAI-MAN-GOC.cmd, 6-DO-HIEU-NANG.cmd.
+# Chạy qua OwnTV.cmd ở thư mục gốc (menu 1, 2, 5).
 param([ValidateSet('cai', 'home', 'goc', 'do')][string]$CheDo = 'cai')
 
-. (Join-Path $PSScriptRoot 'tools\chung.ps1')
+. (Join-Path $PSScriptRoot 'chung.ps1')
 $pkg      = 'io.github.ledat100398.tvhome'
 $act      = "$pkg/.MainActivity"
 $dream    = "$pkg/.ClockDream"
@@ -40,7 +40,7 @@ function ChuanBiJdk {
         }
         winget install -e --id Microsoft.OpenJDK.17 --accept-package-agreements --accept-source-agreements
         $j = TimJdk
-        if (-not $j) { Loi 'Chưa thấy Java sau khi cài. Đóng cửa sổ, mở lại 3-CAI-LAUNCHER.cmd.'; exit 1 }
+        if (-not $j) { Loi 'Chưa thấy Java sau khi cài. Đóng cửa sổ, mở lại OwnTV.cmd và chọn 1.'; exit 1 }
     }
     $env:JAVA_HOME = $j
     $env:Path = (Join-Path $j 'bin') + ';' + $env:Path
@@ -142,18 +142,16 @@ if ($CheDo -eq 'cai') {
     }
     TV @("am start -n $act") | Out-Null
     Write-Host ''
-    Ok 'Launcher mới đang mở trên tivi.'
-    Write-Host 'Dùng thử vài ngày: mở nó từ hàng ứng dụng (ô "OwnTV"). Nút Home vẫn về màn gốc nếu chưa đặt làm màn chính.'
-    Write-Host 'Ổn rồi thì chạy 4-DAT-LAM-MAN-CHINH.cmd. Muốn đo mượt hay không: 6-DO-HIEU-NANG.cmd.'
+    Ok 'Đã cài OwnTV, đang mở trên tivi.'
     exit 0
 }
 
 if ($CheDo -eq 'home') {
     Write-Host 'ĐẶT LAUNCHER MỚI LÀM MÀN HÌNH CHÍNH (mở tivi và nút Home đều ra launcher mới).' -ForegroundColor Yellow
     Write-Host 'Màn gốc Google TV được gỡ khỏi người dùng (không xóa khỏi tivi), nên tắt mở hay khởi động lại vẫn giữ.'
-    Write-Host 'Muốn về như cũ: 5-TRA-LAI-MAN-GOC.cmd.'
+    Write-Host 'Muốn về như cũ: mở OwnTV.cmd, chọn 2.'
     $k = TV @("pm list packages $pkg")
-    if ($k["pm list packages $pkg"] -notmatch [regex]::Escape("package:$pkg")) { Loi 'Chưa cài launcher mới. Chạy 3-CAI-LAUNCHER.cmd trước.'; exit 1 }
+    if ($k["pm list packages $pkg"] -notmatch [regex]::Escape("package:$pkg")) { Loi 'Chưa cài OwnTV. Mở OwnTV.cmd, chọn 1.'; exit 1 }
     if (-not ($env:HOME_DONGY -eq '1' -or (Hoi 'Làm luôn?' $false))) { exit 0 }
     $goc = GocCoCai
     # Sony bật lại app bị "tắt" mỗi lần khởi động lại, nên dùng gỡ cho người dùng 0 (giữ được, trả lại được).

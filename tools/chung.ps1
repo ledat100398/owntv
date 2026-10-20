@@ -1,5 +1,5 @@
 ﻿# Dùng chung cho tv-sony.ps1 và launcher.ps1: đường dẫn, Python + thư viện ADB, chọn IP, chạy lệnh trên tivi.
-# Nạp bằng: . (Join-Path $PSScriptRoot 'tools\chung.ps1')
+# Nạp bằng: . (Join-Path $PSScriptRoot 'chung.ps1')
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding $false
 $OutputEncoding = New-Object System.Text.UTF8Encoding $false
