@@ -1,6 +1,7 @@
 tools/venv/
 tools/adbkey/
 tools/platform-tools/
+tools/tai-tam/
 tools/__pycache__/
 launcher/.gradle/
 launcher/build/

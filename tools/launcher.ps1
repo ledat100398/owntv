@@ -57,16 +57,17 @@ function ChuanBiSdk {
         if (-not (Test-Path $mgr)) {
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             $ProgressPreference = 'SilentlyContinue'
-            $zip = Join-Path $env:TEMP 'android-cmdline-tools.zip'
-            $tmp = Join-Path $env:TEMP 'android-cmdline-tools'
+            New-Item -ItemType Directory -Force $taiTam | Out-Null
+            $zip = Join-Path $taiTam 'android-cmdline-tools.zip'
+            $tmp = Join-Path $taiTam 'android-cmdline-tools'
             Invoke-WebRequest 'https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip' -OutFile $zip -UseBasicParsing
-            if (Test-Path $tmp) { Remove-Item -Recurse -Force $tmp }
+            XoaThuMuc $tmp
             Expand-Archive -Force $zip $tmp
             New-Item -ItemType Directory -Force (Join-Path $sdk 'cmdline-tools') | Out-Null
             $dich = Join-Path $sdk 'cmdline-tools\latest'
-            if (Test-Path $dich) { Remove-Item -Recurse -Force $dich }
+            XoaThuMuc $dich
             Move-Item (Join-Path $tmp 'cmdline-tools') $dich
-            Remove-Item -Force $zip
+            XoaTep $zip; XoaThuMuc $tmp
         }
         $ErrorActionPreference = 'Continue'
         (1..30 | ForEach-Object { 'y' }) | & $mgr --licenses | Out-Null

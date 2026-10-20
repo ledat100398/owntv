@@ -8,6 +8,13 @@ $venvPy = Join-Path $repo 'tools\venv\Scripts\python.exe'
 $tvPy   = Join-Path $repo 'tools\tv.py'
 $saoLuu = Join-Path $repo 'sao-luu'
 New-Item -ItemType Directory -Force $saoLuu | Out-Null
+# Tải tạm vào ngay thư mục này, không dùng %TEMP%: tên người dùng có dấu cách (vd "Duy Vu") khiến %TEMP%
+# thành dạng rút gọn C:\Users\DUYVU~1\..., và Remove-Item của PowerShell 5.1 báo "không tồn tại" với dạng đó.
+$taiTam = Join-Path $repo 'tools\tai-tam'
+function XoaThuMuc($p) {
+    if (Test-Path -LiteralPath $p) { [IO.Directory]::Delete((Resolve-Path -LiteralPath $p).ProviderPath, $true) }
+}
+function XoaTep($p) { if (Test-Path -LiteralPath $p) { [IO.File]::Delete((Resolve-Path -LiteralPath $p).ProviderPath) } }
 
 function Tieude($s) { Write-Host ''; Write-Host "== $s ==" -ForegroundColor Cyan }
 function Loi($s)    { Write-Host $s -ForegroundColor Red }
@@ -65,7 +72,7 @@ function ChuanBiPython {
     $py = $c.exe; $pyArgs = $c.a
     & $py @pyArgs -m venv (Join-Path $repo 'tools\venv')
     & $venvPy -m pip install -q --disable-pip-version-check -r (Join-Path $repo 'tools\requirements.txt')
-    if ($LASTEXITCODE -ne 0) { Loi 'Cài thư viện lỗi (kiểm tra mạng).'; Remove-Item -Recurse -Force (Join-Path $repo 'tools\venv'); exit 1 }
+    if ($LASTEXITCODE -ne 0) { Loi 'Cài thư viện lỗi (kiểm tra mạng).'; XoaThuMuc (Join-Path $repo 'tools\venv'); exit 1 }
     Ok 'Đã cài xong công cụ.'
 }
 
@@ -85,10 +92,11 @@ function TimAdb {
     Write-Host 'Tải công cụ ADB của Google (khoảng 7 MB)...'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $ProgressPreference = 'SilentlyContinue'
-    $zip = Join-Path $env:TEMP 'platform-tools.zip'
+    New-Item -ItemType Directory -Force $taiTam | Out-Null
+    $zip = Join-Path $taiTam 'platform-tools.zip'
     Invoke-WebRequest 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip' -OutFile $zip -UseBasicParsing
     Expand-Archive -Force $zip (Join-Path $repo 'tools')
-    Remove-Item -Force $zip
+    XoaTep $zip
     return (Join-Path $repo 'tools\platform-tools\adb.exe')
 }
 
