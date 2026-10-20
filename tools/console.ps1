@@ -16,8 +16,14 @@ public struct FontInfo {
 [DllImport("kernel32.dll", SetLastError = true)] public static extern IntPtr GetStdHandle(int n);
 [DllImport("kernel32.dll", SetLastError = true)] public static extern bool GetCurrentConsoleFontEx(IntPtr h, bool max, ref FontInfo f);
 [DllImport("kernel32.dll", SetLastError = true)] public static extern bool SetCurrentConsoleFontEx(IntPtr h, bool max, ref FontInfo f);
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool GetConsoleMode(IntPtr h, out uint mode);
+[DllImport("kernel32.dll", SetLastError = true)] public static extern bool SetConsoleMode(IntPtr h, uint mode);
 '@
     }
+    # Tắt "Quick Edit": lỡ bấm chuột vào cửa sổ là Windows dừng script lại (tiêu đề hiện "Select") cho tới khi
+    # bấm Enter, trông như bị treo.
+    $vao = [OwnTV.Con]::GetStdHandle(-10); $m = 0
+    if ([OwnTV.Con]::GetConsoleMode($vao, [ref]$m)) { [void][OwnTV.Con]::SetConsoleMode($vao, [uint32](([int64]$m -bor 0x80) -band 4294967231)) }
     $tot = @('Consolas', 'Cascadia Mono', 'Cascadia Code', 'Courier New')
     $h = [OwnTV.Con]::GetStdHandle(-11)
     $f = New-Object 'OwnTV.Con+FontInfo'
