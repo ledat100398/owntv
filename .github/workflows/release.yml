@@ -20,24 +20,31 @@ concurrency:
 
 jobs:
   apk:
-    runs-on: ubuntu-latest
+    # 24.04 ships the Android SDK (ANDROID_HOME) with licences accepted.
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
-
       - name: Build
         working-directory: launcher
         run: |
+          set -o pipefail
           VERSION=$(sed -n "s/.*findProperty('versionName') ?: '\([0-9.]*\)'.*/\1/p" app/build.gradle)
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
           chmod +x gradlew
-          ./gradlew --no-daemon --console=plain assembleRelease -PversionName="$VERSION"
+          if ! ./gradlew --no-daemon --console=plain assembleRelease -PversionName="$VERSION" 2>&1 | tee build.log; then
+            # Logs need a sign-in; annotations and the summary are public, so surface the error there.
+            grep -E "error|What went wrong|FAILURE|Exception" build.log | head -20 | while IFS= read -r l; do echo "::error::$l"; done
+            { echo '```'; tail -60 build.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           cp app/build/outputs/apk/release/app-release.apk ../OwnTV.apk
 
       - uses: actions/upload-artifact@v4
