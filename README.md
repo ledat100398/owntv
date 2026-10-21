@@ -152,11 +152,11 @@ adb shell cmd package set-home-activity --user 0 io.github.ledat100398.tvhome/.M
 adb shell input keyevent KEYCODE_HOME
 ```
 
-Other TVs and boxes (TCL, Xiaomi, FPT Play Box and so on) may also ship their own home screen, which takes Home
-back after a restart. List every home screen with `adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME` and remove the extra ones the same way.
-Option 1 of `OwnTV.cmd` does this for you. If a TV will not let its home screen go, option 1 instead keeps
-the Home button on OwnTV with a small accessibility service (Settings › Accessibility › OwnTV Home button),
-the way button-remapping apps do.
+Other TVs and boxes (TCL, Coocaa, Xiaomi, FPT Play Box and so on) ship their own home screen too. Do not
+remove those: on many sets the same app also handles the power button, and the remote can no longer turn the
+TV off. Option 1 of `OwnTV.cmd` removes only Google's home screen and keeps the Home button on OwnTV with a
+small accessibility service (Settings › Accessibility › OwnTV Home button), the way button-remapping apps do.
+It also puts back any vendor home screen an older version removed.
 
 While they are removed you cannot add a new Google account on the TV; restore them first if you need to
 (see [Undo everything](#undo-everything)).

@@ -216,20 +216,37 @@ if ($CheDo -eq 'cai') {
 
 if ($CheDo -eq 'home') {
     Write-Host 'ĐẶT LAUNCHER MỚI LÀM MÀN HÌNH CHÍNH (mở tivi và nút Home đều ra launcher mới).' -ForegroundColor Yellow
-    Write-Host 'Màn gốc Google TV được gỡ khỏi người dùng (không xóa khỏi tivi), nên tắt mở hay khởi động lại vẫn giữ.'
+    Write-Host 'Màn gốc của Google được gỡ khỏi người dùng (không xóa khỏi tivi); màn của hãng tivi giữ nguyên.'
     Write-Host 'Muốn về như cũ: mở OwnTV.cmd, chọn 2.'
     $k = TV @("pm list packages $pkg")
     if ($k["pm list packages $pkg"] -notmatch [regex]::Escape("package:$pkg")) { Loi 'Chưa cài OwnTV. Mở OwnTV.cmd, chọn 1.'; exit 1 }
     if (-not ($env:HOME_DONGY -eq '1' -or (Hoi 'Làm luôn?' $false))) { exit 0 }
+    # Chỉ gỡ màn chính của Google. Màn chính của hãng tivi (Coocaa, TCL, Xiaomi...) thường kiêm luôn việc tắt
+    # tivi bằng nút nguồn, gỡ đi là nút nguồn hết tác dụng, nên để nguyên: dịch vụ chuyển nút Home lo phần đó.
     $khac = @(ManChinhKhac)
-    $goGi = @()
-    foreach ($g in $khac) {
-        $quen = $stocks -contains $g
-        if ($quen -or (Hoi "  Gỡ màn hình chính có sẵn $g (cho người dùng 0, trả lại được)?" $true)) { $goGi += $g }
+    $goGi = @($khac | Where-Object { $stocks -contains $_ })
+    $hang = @($khac | Where-Object { $stocks -notcontains $_ })
+    if ($hang) { Write-Host "  Giữ nguyên màn chính của hãng: $($hang -join ', ') (nút Home vẫn ra OwnTV)." }
+    # Bản cũ từng gỡ màn chính của hãng: trả lại, để nút nguồn trên điều khiển tắt được tivi.
+    $daGhi = if (Test-Path $ghiGoc) { @(Get-Content $ghiGoc | ForEach-Object { $_.Trim() } | Where-Object { $_ }) } else { @() }
+    $kDs = TV @('pm list packages -u', 'pm list packages')
+    $coHet = @("$($kDs['pm list packages -u'])" -split "`n" | ForEach-Object { $_.Trim() -replace '^package:', '' } | Where-Object { $_ })
+    $dangCo = @("$($kDs['pm list packages'])" -split "`n" | ForEach-Object { $_.Trim() -replace '^package:', '' } | Where-Object { $_ })
+    $traHang = @($coHet | Where-Object {
+        $dangCo -notcontains $_ -and $stocks -notcontains $_ -and $_ -ne $phuTro -and $_ -ne $pkg -and
+        ($_ -match 'launcher|tvhome|homeshell|desktop' -or $daGhi -contains $_) })
+    if ($traHang) {
+        # Chỉ những gói thật sự là màn hình chính (có hoạt động HOME), không đụng app đã dọn bằng mục 3.
+        $kHome = TV @($traHang | ForEach-Object { "dumpsys package $_ | grep -c category.HOME" })
+        $traHang = @($traHang | Where-Object { "$($kHome["dumpsys package $_ | grep -c category.HOME"])".Trim() -match '^[1-9]' })
+    }
+    if ($traHang) {
+        $tra = @(); foreach ($g in $traHang) { $tra += "cmd package install-existing $g"; $tra += "pm enable $g" }
+        TV $tra | Out-Null
+        Ok "Đã trả lại màn chính của hãng (bản cũ từng gỡ): $($traHang -join ', ')"
     }
     $goc = $goGi | Select-Object -First 1
     # Ghi lại cả các màn đã gỡ từ lần trước, để mục 2 trả lại đủ.
-    $daGhi = if (Test-Path $ghiGoc) { @(Get-Content $ghiGoc | Where-Object { $_.Trim() }) } else { @() }
     if ($goGi) { @($daGhi + $goGi | Select-Object -Unique) | Set-Content $ghiGoc }
     # Sony bật lại app bị "tắt" mỗi lần khởi động lại, nên dùng gỡ cho người dùng 0 (giữ được, trả lại được).
     # Android 10 trở lên lưu màn hình chính dưới dạng "vai trò" (role); đặt cả hai cho chắc.
