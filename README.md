@@ -118,6 +118,7 @@ home takes Home back, so use the Windows steps below once.
 | 3 | Switches off background, advertising and tracking apps (Sony list), group by group. Optional |
 | 4 | Restores everything option 3 switched off |
 | 5 | Measures start time, dropped frames and memory |
+| 6 | Home still opens the old screen? Press Home once on the remote; it writes `OwnTV-kiem-tra.txt` on the desktop to attach to an issue |
 
 > The prompts are in Vietnamese, with English hints in the menu. Every option asks before changing
 > anything, keeps a backup and can be undone. If you prefer English, the manual steps below do the same.

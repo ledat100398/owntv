@@ -118,6 +118,7 @@ Chỉ có một file cần mở là `OwnTV.cmd`, mọi việc nằm trong menu c
 | 3 | Tắt app chạy ngầm, quảng cáo, theo dõi (danh sách cho Sony), hỏi từng nhóm. Không bắt buộc |
 | 4 | Bật lại mọi app mục 3 đã tắt |
 | 5 | Đo thời gian mở, khung hình giật, bộ nhớ |
+| 6 | Bấm Home vẫn về màn cũ? Bấm Home một lần trên điều khiển, máy ghi tệp `OwnTV-kiem-tra.txt` ra màn hình desktop để gửi đi |
 
 Mục nào cũng hỏi trước khi đổi, có sao lưu và trả lại được.
 

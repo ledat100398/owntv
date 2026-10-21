@@ -26,12 +26,13 @@ while ($true) {
     Write-Host '  3. Tắt app chạy ngầm - tivi Sony           (debloat, optional)'
     Write-Host '  4. Bật lại các app đã tắt ở mục 3          (undo 3)'
     Write-Host '  5. Đo độ mượt                              (measure performance)'
+    Write-Host '  6. Kiểm tra lỗi nút Home, ghi ra tệp gửi đi (Home button report)'
     Write-Host ''
     Write-Host '  0. Thoát                                   (exit)'
     Write-Host '  ------------------------------------------------------------'
     Write-Host '  Bấm số (press a number): ' -NoNewline
     $k = [Console]::ReadKey($true).KeyChar
-    if ('1', '2', '3', '4', '5', '0' -notcontains [string]$k) { continue }
+    if ('1', '2', '3', '4', '5', '6', '0' -notcontains [string]$k) { continue }
     Write-Host $k
     Write-Host ''
     switch ([string]$k) {
@@ -40,6 +41,7 @@ while ($true) {
         '3' { [void](Chay 'tv-sony.ps1' 'toiuu') }
         '4' { [void](Chay 'tv-sony.ps1' 'khoiphuc') }
         '5' { [void](Chay 'launcher.ps1' 'do') }
+        '6' { [void](Chay 'launcher.ps1' 'kham') }
         '0' { exit 0 }
     }
     Write-Host ''

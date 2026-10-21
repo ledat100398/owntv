@@ -1,6 +1,6 @@
 ﻿# Launcher mới cho tivi Sony (Google TV): dựng, cài, đặt làm màn hình chính, trả lại màn gốc, đo hiệu năng.
 # Chạy qua OwnTV.cmd ở thư mục gốc (menu 1, 2, 5).
-param([ValidateSet('cai', 'home', 'goc', 'do')][string]$CheDo = 'cai')
+param([ValidateSet('cai', 'home', 'goc', 'do', 'kham')][string]$CheDo = 'cai')
 
 . (Join-Path $PSScriptRoot 'chung.ps1')
 $pkg      = 'io.github.ledat100398.tvhome'
@@ -387,5 +387,33 @@ if ($CheDo -eq 'do') {
     "$(Get-Date -Format 'yyyy-MM-dd HH:mm'),$lanh,$am,$tong,$giat,$p95,$pss" | Add-Content $csv -Encoding UTF8
     Write-Host ''
     Write-Host 'Đã ghi vào sao-luu\do-hieu-nang.csv để so các lần đo. Có dòng CHƯA ĐẠT thì chụp màn này và mở issue trên GitHub.'
+    exit 0
+}
+
+if ($CheDo -eq 'kham') {
+    Write-Host 'KIỂM TRA NÚT HOME - ghi lại tivi làm gì khi bấm Home, để biết vì sao vẫn về màn cũ.' -ForegroundColor Yellow
+    $hoi = @('getprop ro.product.manufacturer', 'getprop ro.product.model', 'getprop ro.build.version.release',
+        "dumpsys package $pkg | grep versionName",
+        'cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME',
+        'cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME',
+        'cmd role get-role-holders --user 0 android.app.role.HOME',
+        'settings get secure enabled_accessibility_services', 'settings get secure accessibility_enabled',
+        'dumpsys accessibility | grep -iE "Bound services|Enabled services|HomeKeyService|Crashed"')
+    $k1 = TV $hoi
+    TV @('logcat -c') | Out-Null
+    Write-Host ''
+    Write-Host 'Cầm điều khiển của tivi, bấm nút Home MỘT lần. Đợi màn hình đứng yên (khoảng 5 giây).' -ForegroundColor Yellow
+    Read-Host 'Xong thì bấm Enter ở đây' | Out-Null
+    $nhat = 'logcat -d -v time | grep -iE "START u0|Displayed|HomeKeyService|keycode=3|KEYCODE_HOME|AccessibilityInputFilter|KeyboardInterceptor" | tail -40'
+    $k2 = TV @('dumpsys activity activities | grep -iE "resumedactivity|mFocusedApp"', 'dumpsys window | grep -E "mCurrentFocus|mFocusedApp"', $nhat)
+    $bc = @("OwnTV - kiem tra nut Home - $(Get-Date -Format 'yyyy-MM-dd HH:mm')", '')
+    foreach ($q in $hoi) { $bc += "### $q"; $bc += "$($k1[$q])".Trim(); $bc += '' }
+    $bc += '##### SAU KHI BAM HOME #####'
+    foreach ($q in $k2.Keys) { $bc += "### $q"; $bc += "$($k2[$q])".Trim(); $bc += '' }
+    $tep = Join-Path ([Environment]::GetFolderPath('Desktop')) 'OwnTV-kiem-tra.txt'
+    try { $bc | Set-Content -LiteralPath $tep -Encoding UTF8 } catch { $tep = Join-Path $saoLuu 'OwnTV-kiem-tra.txt'; $bc | Set-Content -LiteralPath $tep -Encoding UTF8 }
+    Ok "Đã ghi ra $tep"
+    Write-Host 'Gửi tệp này (hoặc chụp màn hình nó) cho người hỗ trợ, hoặc dán vào GitHub Issues.'
+    Start-Process notepad.exe -ArgumentList "`"$tep`""
     exit 0
 }
